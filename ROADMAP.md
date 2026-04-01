@@ -60,10 +60,13 @@
   - [x] Hono RPC の型解決を確認
   - [x] `docker run` で Next.js コンテナ単体の起動確認
 - [ ] docker-compose でローカル開発環境を構築（hono-api + nextjs の統合）
-  - [ ] `nextjs/src/lib/client.ts` の URL を環境変数化
-  - [ ] `hono-api/Dockerfile` をモノレポ対応に修正
-  - [ ] ルートに `docker-compose.yml` を作成
-  - [ ] `docker compose up` で両コンテナ起動・疎通確認
+  - [x] `nextjs/src/lib/client.ts` の URL を環境変数化
+  - [x] `nextjs/src/app/actions.ts` の URL を環境変数化
+  - [x] `hono-api/Dockerfile` をモノレポ対応に修正
+  - [x] ルートに `docker-compose.yml` を作成
+  - [x] `docker compose up` で両コンテナ起動確認
+  - [ ] シードデータ投入（Prisma / Drizzle）して POST が通ることを確認
+  - [ ] GET / POST 両方の疎通確認
 - [ ] DevContainer を使った開発環境構築
 
 ---
