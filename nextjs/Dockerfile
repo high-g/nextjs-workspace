@@ -24,8 +24,8 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 COPY --from=builder /app/nextjs/.next/standalone ./
-COPY --from=builder /app/nextjs/.next/static ./.next/static
-COPY --from=builder /app/nextjs/public ./public
+COPY --from=builder /app/nextjs/.next/static ./nextjs/.next/static
+COPY --from=builder /app/nextjs/public ./nextjs/public
 
 EXPOSE 3000
-CMD ["node", "server.js"]
+CMD ["node", "nextjs/server.js"]
