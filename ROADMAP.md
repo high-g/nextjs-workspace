@@ -50,16 +50,20 @@
 - [x] Docker の基本概念を理解
 - [x] Dockerfile の書き方
 - [x] Hono アプリを Docker 化
-- [ ] Next.js アプリを Docker 化（Hono RPC 型の相対パス問題解決）
-  - [ ] モノレポ化: pnpm-workspace で hono-api と nextjs を統合
-    - [ ] ルートに `pnpm-workspace.yaml` 作成（packages: hono-api, nextjs）
-    - [ ] ルートに `package.json` 作成（workspace 管理用スクリプト）
-    - [ ] `nextjs/src/lib/client.ts` の import を相対パス → workspace パッケージに変更
-    - [ ] `nextjs/Dockerfile` を修正（build context をルートに、hono-api/src をコピー）
-    - [ ] docker build をルートから実行（`docker build -f nextjs/Dockerfile .`）
-  - [ ] Hono RPC の型解決を確認（import 経路が Docker 内で正しく解決されるか）
-  - [ ] 両コンテナを `docker run` で動作確認
-- [ ] docker-compose でローカル開発環境を構築（hono-api + nextjs + DB の統合）
+- [x] Next.js アプリを Docker 化（Hono RPC 型の相対パス問題解決）
+  - [x] モノレポ化: pnpm-workspace で hono-api と nextjs を統合
+    - [x] ルートに `pnpm-workspace.yaml` 作成（packages: hono-api, nextjs）
+    - [x] ルートに `package.json` 作成（workspace 管理用スクリプト）
+    - [x] `nextjs/src/lib/client.ts` の import を相対パス → workspace パッケージに変更
+    - [x] `nextjs/Dockerfile` を修正（build context をルートに、hono-api/src をコピー、standalone 対応）
+    - [x] docker build をルートから実行（`docker build -f nextjs/Dockerfile .`）
+  - [x] Hono RPC の型解決を確認
+  - [x] `docker run` で Next.js コンテナ単体の起動確認
+- [ ] docker-compose でローカル開発環境を構築（hono-api + nextjs の統合）
+  - [ ] `nextjs/src/lib/client.ts` の URL を環境変数化
+  - [ ] `hono-api/Dockerfile` をモノレポ対応に修正
+  - [ ] ルートに `docker-compose.yml` を作成
+  - [ ] `docker compose up` で両コンテナ起動・疎通確認
 - [ ] DevContainer を使った開発環境構築
 
 ---
