@@ -77,6 +77,24 @@
 
 ---
 
+## Phase 5: Vercel デプロイ
+
+- [ ] Next.js を Vercel にデプロイ
+- [ ] Hono API を Vercel Functions としてデプロイ
+- [ ] 環境変数の設定（`HONO_API_URL` など）
+- [ ] プレビューデプロイの活用
+
+---
+
+## Phase 6: Cloudflare デプロイ
+
+- [ ] Cloudflare Pages に Next.js をデプロイ
+- [ ] Hono API を Cloudflare Workers としてデプロイ
+- [ ] Cloudflare D1（SQLite 互換 DB）との連携
+- [ ] Vercel / AWS との比較 — コスト・レイテンシ・DX
+
+---
+
 ## 追加学習: その他 ORM
 
 - [ ] Kysely を試す — SQL に近いクエリビルダーの書き心地を体験
