@@ -1,19 +1,30 @@
 # Stage 1: ビルド
 FROM node:24-alpine AS builder
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
+
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+COPY hono-api/package.json ./hono-api/
+COPY nextjs/package.json ./nextjs/
+
 RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 RUN pnpm install --frozen-lockfile
-COPY . .
+
+COPY hono-api/src ./hono-api/src
+COPY nextjs/src ./nextjs/src
+COPY nextjs/public ./nextjs/public
+COPY nextjs/next.config.ts nextjs/tsconfig.json nextjs/postcss.config.mjs nextjs/eslint.config.mjs ./nextjs/
+
+WORKDIR /app/nextjs
 RUN pnpm build
 
 # Stage 2: 本番用
 FROM node:24-alpine AS runner
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
-RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
-RUN pnpm install --frozen-lockfile --prod
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
+ENV NODE_ENV=production
+
+COPY --from=builder /app/nextjs/.next/standalone ./
+COPY --from=builder /app/nextjs/.next/static ./.next/static
+COPY --from=builder /app/nextjs/public ./public
+
 EXPOSE 3000
-CMD ["pnpm", "start"]
+CMD ["node", "server.js"]
