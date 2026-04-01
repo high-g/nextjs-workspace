@@ -10,6 +10,7 @@ RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 RUN pnpm install --frozen-lockfile
 
 COPY hono-api/src ./hono-api/src
+COPY hono-api/drizzle ./hono-api/drizzle
 COPY nextjs/src ./nextjs/src
 COPY nextjs/public ./nextjs/public
 COPY nextjs/next.config.ts nextjs/tsconfig.json nextjs/postcss.config.mjs nextjs/eslint.config.mjs ./nextjs/
