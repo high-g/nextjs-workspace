@@ -6,7 +6,7 @@ export async function prismaSubmitMessage(formData: FormData) {
   const message = formData.get('message') as string
   console.log('サーバで受け取ったメッセージ：', message)
 
-  const res = await fetch('http://localhost:3001/prisma', {
+  const res = await fetch(`${process.env.HONO_API_URL ?? 'http://localhost:3001'}/prisma`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ authorId: 1, title: message }), // authorId は一旦仮
@@ -21,7 +21,7 @@ export async function drizzleSubmitMessage(formData: FormData) {
   const message = formData.get('message') as string
   console.log('サーバで受け取ったメッセージ：', message)
 
-  const res = await fetch('http://localhost:3001/drizzle', {
+  const res = await fetch(`${process.env.HONO_API_URL ?? 'http://localhost:3001'}/drizzle`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ authorId: 1, title: message }), // authorId は一旦仮
