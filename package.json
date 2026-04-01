@@ -1,0 +1,14 @@
+{
+  "name": "nextjs-workspace",
+  "private": true,
+  "scripts": {
+    "dev:api": "pnpm --filter hono-api dev",
+    "dev:web": "pnpm --filter nextjs dev"
+  },
+  "pnpm": {
+    "overrides": {
+      "hono": "4.12.9"
+    }
+  },
+  "packageManager": "pnpm@10.32.1"
+}
