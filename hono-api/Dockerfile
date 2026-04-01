@@ -12,6 +12,8 @@ RUN pnpm rebuild better-sqlite3
 COPY hono-api/src ./hono-api/src
 COPY hono-api/drizzle ./hono-api/drizzle
 COPY hono-api/prisma ./hono-api/prisma
+COPY hono-api/drizzle.config.ts ./hono-api/
+COPY hono-api/prisma.config.ts ./hono-api/
 
 WORKDIR /app/hono-api
 EXPOSE 3001

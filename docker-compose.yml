@@ -8,6 +8,12 @@ services:
     environment:
       - DB_FILE_NAME=file:local.db
       - DATABASE_URL=file:./dev.db
+    command: >
+      sh -c "
+        pnpm dlx prisma migrate deploy &&
+        pnpm dlx drizzle-kit migrate &&
+        pnpm dev
+      "
   nextjs:
     build:
       context: .
