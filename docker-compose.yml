@@ -1,0 +1,20 @@
+services:
+  hono-api:
+    build:
+      context: .
+      dockerfile: hono-api/Dockerfile
+    ports:
+      - '3001:3001'
+    environment:
+      - DB_FILE_NAME=file:local.db
+      - DATABASE_URL=file:./dev.db
+  nextjs:
+    build:
+      context: .
+      dockerfile: nextjs/Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - HONO_API_URL=http://hono-api:3001
+    depends_on:
+      - hono-api
