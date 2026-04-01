@@ -10,8 +10,8 @@ services:
       - DATABASE_URL=file:./dev.db
     command: >
       sh -c "
-        pnpm dlx prisma migrate deploy &&
-        pnpm dlx drizzle-kit migrate &&
+        pnpm exec prisma migrate deploy &&
+        pnpm exec drizzle-kit migrate &&
         pnpm dev
       "
   nextjs:
