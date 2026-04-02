@@ -31,17 +31,21 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ## 現在の状況（Phase 3: Docker — DevContainer）
 
-`nextjs-workspace/` をモノレポとして構成済み。docker-compose による2コンテナ連携も完成。
+`nextjs-workspace/` をモノレポとして構成済み。docker-compose による2コンテナ連携も完成。GET/POST 両方の疎通も確認済み。
 
 ### 構成
 
 ```
 nextjs-workspace/
-├── hono-api/          # Hono API サーバー（port 3001）
-├── nextjs/            # Next.js フロントエンド（port 3000）
+├── hono-api/
+│   ├── prisma/seed.ts     # Prisma シード（upsert で冪等）
+│   ├── drizzle/seed.ts    # Drizzle シード（onConflictDoNothing で冪等）
+│   └── package.json       # seed:prisma / seed:drizzle スクリプト追加済み
+├── nextjs/
+├── .claude/commands/      # /update-docs カスタムコマンド
 ├── pnpm-workspace.yaml
-├── package.json       # pnpm.overrides で hono バージョンを統一
-├── docker-compose.yml # hono-api + nextjs の統合環境
+├── package.json           # oxfmt / oxlint をルートに移動、pnpm.overrides
+├── docker-compose.yml     # hono-api + nextjs、マイグレーション+シード起動設定
 └── pnpm-lock.yaml
 ```
 
@@ -57,6 +61,7 @@ nextjs-workspace/
 - `actions.ts` / `client.ts` の URL をハードコードから環境変数（`HONO_API_URL`）に変更済み
 - マイグレーション + シードを `docker-compose.yml` の `command` で起動時に実行するよう設定済み
 - `hono-api/prisma/seed.ts` / `hono-api/drizzle/seed.ts` 作成済み（`onConflictDoNothing` で冪等）
+- `oxfmt` / `oxlint` をルート `package.json` に移動（プロジェクト全体で使用）
 
 ### 次回やること：DevContainer の構築
 

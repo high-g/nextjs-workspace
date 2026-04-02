@@ -75,6 +75,17 @@
 
 ---
 
+## Phase 3.5: PostgreSQL 移行
+
+- [ ] PostgreSQL の基本概念を理解（SQLite との違い）
+- [ ] Docker Compose に PostgreSQL コンテナを追加
+- [ ] Prisma スキーマを PostgreSQL 用に変更（`provider = "postgresql"`）
+- [ ] Drizzle スキーマを PostgreSQL 用に変更（`drizzle-orm/node-postgres`）
+- [ ] マイグレーション・シードの動作確認
+- [ ] hono-api から PostgreSQL への接続確認
+
+---
+
 ## Phase 4: AWS
 
 - [ ] AWS の基本構成を理解 (ECS / ECR / ALB)
