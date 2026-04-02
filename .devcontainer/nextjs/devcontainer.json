@@ -1,7 +1,7 @@
 {
-  "name": "next-workspace",
-  "dockerComposeFile": "../docker-compose.yml",
-  "service": "hono-api",
+  "name": "nextjs",
+  "dockerComposeFile": "../../docker-compose.yml",
+  "service": "nextjs",
   "workspaceFolder": "/app",
   "customizations": {
     "vscode": {
