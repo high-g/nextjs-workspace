@@ -8,7 +8,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "seed:prisma": "tsx prisma/seed.ts",
+    "seed:drizzle": "tsx drizzle/seed.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.11",
@@ -39,5 +41,8 @@
       "esbuild",
       "prisma"
     ]
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }

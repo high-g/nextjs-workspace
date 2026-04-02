@@ -12,6 +12,8 @@ services:
       sh -c "
         pnpm exec prisma migrate deploy &&
         pnpm exec drizzle-kit migrate &&
+        pnpm seed:prisma &&
+        pnpm seed:drizzle &&
         pnpm dev
       "
   nextjs:
