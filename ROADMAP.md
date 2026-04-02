@@ -68,6 +68,10 @@
   - [x] シードデータ投入（Prisma / Drizzle）して POST が通ることを確認
   - [x] GET / POST 両方の疎通確認
 - [ ] DevContainer を使った開発環境構築
+  - [ ] `.devcontainer/devcontainer.json` を作成
+  - [ ] `docker-compose.yml` を DevContainer から参照する設定
+  - [ ] VS Code でコンテナ内に入って開発できることを確認
+  - [ ] 拡張機能・設定を `devcontainer.json` に記述して再現性を確認
 
 ---
 
