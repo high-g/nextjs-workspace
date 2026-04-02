@@ -29,9 +29,9 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 3: Docker — DevContainer）
+## 現在の状況（Phase 3: Docker — 完了）
 
-`nextjs-workspace/` をモノレポとして構成済み。docker-compose による2コンテナ連携も完成。GET/POST 両方の疎通も確認済み。
+`nextjs-workspace/` をモノレポとして構成済み。docker-compose による2コンテナ連携・DevContainer 設定・ホットリロード対応まで完了。
 
 ### 構成
 
@@ -42,10 +42,13 @@ nextjs-workspace/
 │   ├── drizzle/seed.ts    # Drizzle シード（onConflictDoNothing で冪等）
 │   └── package.json       # seed:prisma / seed:drizzle スクリプト追加済み
 ├── nextjs/
+├── .devcontainer/
+│   ├── hono-api/devcontainer.json   # service: "hono-api"
+│   └── nextjs/devcontainer.json     # service: "nextjs"
 ├── .claude/commands/      # /update-docs カスタムコマンド
 ├── pnpm-workspace.yaml
 ├── package.json           # oxfmt / oxlint をルートに移動、pnpm.overrides
-├── docker-compose.yml     # hono-api + nextjs、マイグレーション+シード起動設定
+├── docker-compose.yml     # hono-api + nextjs、volumes でホットリロード対応
 └── pnpm-lock.yaml
 ```
 
@@ -62,40 +65,43 @@ nextjs-workspace/
 - マイグレーション + シードを `docker-compose.yml` の `command` で起動時に実行するよう設定済み
 - `hono-api/prisma/seed.ts` / `hono-api/drizzle/seed.ts` 作成済み（`onConflictDoNothing` で冪等）
 - `oxfmt` / `oxlint` をルート `package.json` に移動（プロジェクト全体で使用）
+- DevContainer を2サービス対応に構成（`.devcontainer/hono-api/` と `.devcontainer/nextjs/` に分割）
+- `docker-compose.yml` に `volumes` を追加してホットリロード対応（`tsx watch` が変更を検知できるように）
 
-### 次回やること：DevContainer の構築
+### 次回やること：Phase 3.5 — PostgreSQL 移行
 
-`.devcontainer/devcontainer.json` を作成し、既存の `docker-compose.yml` を参照する形で構成する。
+SQLite から PostgreSQL へ移行し、本番環境に近い構成にする。
 
-**目的：** VS Code でコンテナの中に入って開発できるようにする。ホストの Node.js や OS に依存しない再現性のある開発環境。
+#### 1. `docker-compose.yml` に PostgreSQL コンテナを追加
 
-#### 1. `.devcontainer/devcontainer.json` を作成
+```yaml
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    ports:
+      - '5432:5432'
+```
 
-```json
-{
-  "name": "nextjs-workspace",
-  "dockerComposeFile": "../docker-compose.yml",
-  "service": "hono-api",
-  "workspaceFolder": "/app",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
-        "Prisma.prisma"
-      ]
-    }
-  }
+#### 2. Prisma スキーマを PostgreSQL 用に変更
+
+`hono-api/prisma/schema.prisma` の `provider` を変更：
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 ```
 
-#### 2. VS Code で「Reopen in Container」を実行
+#### 3. Drizzle スキーマを PostgreSQL 用に変更
 
-コマンドパレット（`Cmd+Shift+P`）→ `Dev Containers: Reopen in Container`
+`drizzle-orm/node-postgres` に切り替え。
 
-#### 3. コンテナ内でターミナルを開き、動作確認
+#### 4. 環境変数を更新
 
-```bash
-node -v   # コンテナ内の Node.js バージョンが表示されること
-pnpm dev  # hono-api が起動すること
+```
+DATABASE_URL=postgresql://user:password@postgres:5432/mydb
 ```

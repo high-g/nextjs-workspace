@@ -67,11 +67,12 @@
   - [x] `docker compose up` で両コンテナ起動確認
   - [x] シードデータ投入（Prisma / Drizzle）して POST が通ることを確認
   - [x] GET / POST 両方の疎通確認
-- [ ] DevContainer を使った開発環境構築
-  - [ ] `.devcontainer/devcontainer.json` を作成
-  - [ ] `docker-compose.yml` を DevContainer から参照する設定
-  - [ ] VS Code でコンテナ内に入って開発できることを確認
-  - [ ] 拡張機能・設定を `devcontainer.json` に記述して再現性を確認
+- [x] DevContainer を使った開発環境構築
+  - [x] `.devcontainer/hono-api/devcontainer.json` と `.devcontainer/nextjs/devcontainer.json` を作成（2サービス対応）
+  - [x] `docker-compose.yml` を DevContainer から参照する設定
+  - [x] `docker-compose.yml` に `volumes` を追加してホットリロード対応
+  - [x] VS Code でコンテナ内に入って開発できることを確認
+  - [x] 拡張機能・設定を `devcontainer.json` に記述して再現性を確認
 
 ---
 
