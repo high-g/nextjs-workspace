@@ -8,6 +8,10 @@ services:
     environment:
       - DB_FILE_NAME=file:local.db
       - DATABASE_URL=file:./dev.db
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/hono-api/node_modules
     command: >
       sh -c "
         pnpm exec prisma migrate deploy &&
@@ -24,5 +28,9 @@ services:
       - '3000:3000'
     environment:
       - HONO_API_URL=http://hono-api:3001
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/nextjs/node_modules
     depends_on:
       - hono-api
