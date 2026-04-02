@@ -3,7 +3,14 @@
   "private": true,
   "scripts": {
     "dev:api": "pnpm --filter hono-api dev",
-    "dev:web": "pnpm --filter nextjs dev"
+    "dev:web": "pnpm --filter nextjs dev",
+    "lint": "oxlint",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.42.0",
+    "oxlint": "^1.57.0"
   },
   "pnpm": {
     "overrides": {
