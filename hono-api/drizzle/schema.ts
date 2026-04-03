@@ -1,18 +1,18 @@
-import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { boolean, integer, pgTable, serial, text } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
-export const users = sqliteTable("users", {
-  id: int().primaryKey({ autoIncrement: true }),
+export const users = pgTable("users", {
+  id: serial().primaryKey(),
   email: text().notNull().unique(),
   name: text(),
 });
 
-export const posts = sqliteTable("posts", {
-  id: int().primaryKey({ autoIncrement: true }),
+export const posts = pgTable("posts", {
+  id: serial().primaryKey(),
   title: text().notNull(),
   content: text(),
-  published: int({ mode: "boolean" }).notNull().default(false),
-  authorId: int()
+  published: boolean().notNull().default(false),
+  authorId: integer()
     .notNull()
     .references(() => users.id),
 });
