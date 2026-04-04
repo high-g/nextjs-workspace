@@ -29,14 +29,14 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 3.5: PostgreSQL 移行 — 完了）
+## 現在の状況（Phase 4: AWS — EC2 デプロイ 進行中）
 
-Drizzle を PostgreSQL に移行済み。Prisma は引き続き SQLite を使用。`docker compose up --build` での動作確認済み。
+Phase 3.5（PostgreSQL 移行）完了。Phase 4 として EC2 への直接デプロイから始める方針。
 
 ### 方針
 
-- **Drizzle** → PostgreSQL（`drizzle-orm/node-postgres`）
-- **Prisma** → SQLite のまま存続（方針変更）
+- まず EC2 に Docker で直接デプロイして AWS の基本を掴む
+- その後 ECS / ECR を使った本格運用構成へ移行
 
 ### 構成
 
@@ -78,10 +78,49 @@ nextjs-workspace/
 - `hono-api/Dockerfile` に `COPY nextjs/package.json ./nextjs/` 追加 → pnpm がワークスペース全体の依存グラフを正しく解決し `pg` が drizzle-orm にリンクされる
 - Docker anonymous volume のキャッシュ問題 → `docker compose down -v` で解決
 
-### 次回やること：Phase 4（AWS）へ進む
+---
 
-ROADMAP.md の Phase 4 に沿って AWS デプロイを開始する。
+## 補足・用語解説
 
-- AWS の基本構成を理解（ECS / ECR / ALB）
-- ECR に Docker イメージを push
-- ECS (Fargate) でコンテナをデプロイ
+### AWS 全般
+
+**ルートアカウントを使わない理由**
+AWS にはメールアドレスでログインする「ルートアカウント」がある。全権限を持つため漏洩すると致命的。日常的な操作は IAM ユーザーを作って行うのが基本。
+
+**IAM（Identity and Access Management）**
+AWS のアクセス権限管理サービス。「誰が何をできるか」を定義する。
+- **IAM ユーザー**: 人や CLI ツールが使うアカウント
+- **IAM ポリシー**: 権限の定義（例: S3 の読み取りのみ許可）
+- **IAM ロール**: EC2 や GitHub Actions など「人以外」に権限を与える仕組み
+
+**アクセスキーとシークレットキー**
+CLI や GitHub Actions が AWS を操作するための認証情報。パスワードと同じ扱いで厳重に管理する。漏洩したらすぐ無効化して再発行。
+
+### デプロイパターン
+
+**EC2 + CodeDeploy パターン**
+- EC2: 仮想サーバー。自分で管理する（OS・Docker のインストール等も自分で行う）
+- CodeDeploy: AWS のデプロイ自動化サービス。EC2 上の CodeDeploy エージェントが S3 から成果物を取得して実行する
+- 流れ: `GitHub Actions → S3 に成果物 upload → CodeDeploy → EC2 にデプロイ`
+
+**ECS + ECR パターン**
+- ECR: Docker イメージを保存する AWS のレジストリ（Docker Hub の AWS 版）
+- ECS: コンテナを動かすサービス。サーバー管理不要（Fargate モード）
+- 流れ: `GitHub Actions → ECR に push → ECS が自動で pull・起動`
+
+### 次回やること：IAM セットアップ → EC2 起動
+
+```bash
+# IAM アクセスキー発行後、ターミナルで実行
+aws configure
+# → Access Key ID / Secret Access Key / ap-northeast-1 / json を入力
+
+# 設定確認
+aws sts get-caller-identity
+```
+
+その後：
+1. EC2 インスタンス起動（Amazon Linux 2023 / t2.micro）
+2. SSH 接続して Docker をインストール
+3. リポジトリを clone して `docker compose up --build`
+4. セキュリティグループでポート 3000 / 3001 を開放して疎通確認

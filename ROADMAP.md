@@ -95,10 +95,34 @@
 
 ## Phase 4: AWS
 
-- [ ] AWS の基本構成を理解 (ECS / ECR / ALB)
-- [ ] ECR に Docker イメージを push
-- [ ] ECS (Fargate) でコンテナをデプロイ
-- [ ] 独自ドメイン + HTTPS (Route 53 + ACM)
+### 準備
+
+- [ ] IAM ユーザー作成・アクセスキー発行
+- [ ] AWS CLI セットアップ（`aws configure`）
+
+### パターン1: EC2 + CodeDeploy
+
+- [ ] EC2 インスタンス起動（Amazon Linux 2023 / t2.micro）
+- [ ] EC2 に Docker / Docker Compose / CodeDeploy エージェントをインストール
+- [ ] セキュリティグループでポート開放（22 / 3000 / 3001）
+- [ ] S3 バケット作成（デプロイ成果物置き場）
+- [ ] CodeDeploy アプリケーション・デプロイグループ作成
+- [ ] `appspec.yml` と デプロイスクリプト作成
+- [ ] GitHub Actions ワークフロー作成
+  - [ ] Docker イメージをビルド
+  - [ ] 成果物を S3 に upload
+  - [ ] CodeDeploy デプロイを起動
+- [ ] push をトリガーに EC2 へ自動デプロイされることを確認
+- [ ] ブラウザから EC2 パブリック IP でアクセス確認
+
+### パターン2: ECS + ECR
+
+- [ ] ECS / ECR / ALB の基本構成を理解
+- [ ] ECR リポジトリ作成
+- [ ] ECS タスク定義・サービス作成
+- [ ] GitHub Actions でビルド → ECR push → ECS 自動デプロイ
+- [ ] ALB でロードバランシング
+- [ ] 独自ドメイン + HTTPS（Route 53 + ACM）
 
 ---
 
