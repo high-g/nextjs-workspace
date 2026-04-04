@@ -38,15 +38,9 @@ services:
     build:
       context: .
       dockerfile: nextjs/Dockerfile
-      target: builder
     ports:
       - '3000:3000'
     environment:
       - HONO_API_URL=http://hono-api:3001
-    volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/nextjs/node_modules
     depends_on:
       - hono-api
-    command: sh -c "cd /app/nextjs && pnpm dev"
