@@ -88,8 +88,8 @@
   - [x] `src/lib/drizzle.ts` を `node-postgres` に変更
   - [x] `drizzle/seed.ts` を `node-postgres` に変更
   - [x] 古い SQLite 用マイグレーションファイルを削除
-- [ ] `docker compose up --build` でマイグレーション・シードの動作確認
-- [ ] hono-api から PostgreSQL への接続確認（GET / POST 疎通）
+- [x] `docker compose up --build` でマイグレーション・シードの動作確認
+- [x] hono-api から PostgreSQL への接続確認（GET / POST 疎通）
 
 ---
 

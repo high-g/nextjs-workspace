@@ -70,7 +70,7 @@ pnpm dev:web   # nextjs を起動
 | Phase 2.5 | Prisma CRUD | 完了 |
 | Phase 2.6 | Drizzle CRUD | 完了 |
 | Phase 3 | Docker / DevContainer | 完了 |
-| Phase 3.5 | PostgreSQL 移行 | 進行中 |
+| Phase 3.5 | PostgreSQL 移行 | 完了 |
 | Phase 4 | AWS デプロイ | 未着手 |
 | Phase 5 | Vercel デプロイ | 未着手 |
 | Phase 6 | Cloudflare デプロイ | 未着手 |

@@ -29,9 +29,9 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 3.5: PostgreSQL 移行 — 動作確認待ち）
+## 現在の状況（Phase 3.5: PostgreSQL 移行 — 完了）
 
-Drizzle を PostgreSQL に移行済み。Prisma は引き続き SQLite を使用。`docker compose up --build` での動作確認が次のステップ。
+Drizzle を PostgreSQL に移行済み。Prisma は引き続き SQLite を使用。`docker compose up --build` での動作確認済み。
 
 ### 方針
 
@@ -74,16 +74,14 @@ nextjs-workspace/
 - DevContainer を2サービス対応に構成（`.devcontainer/hono-api/` と `.devcontainer/nextjs/` に分割）
 - `docker-compose.yml` に `volumes` を追加してホットリロード対応
 - 機密情報を `.env` で管理し `env_file` で docker-compose に渡す構成に変更
+- `docker-compose.yml` の `nextjs` サービスから `target: builder` / `volumes` / `command` を削除（standalone 対応）
+- `hono-api/Dockerfile` に `COPY nextjs/package.json ./nextjs/` 追加 → pnpm がワークスペース全体の依存グラフを正しく解決し `pg` が drizzle-orm にリンクされる
+- Docker anonymous volume のキャッシュ問題 → `docker compose down -v` で解決
 
-### 次回やること：`docker compose up --build` で動作確認
+### 次回やること：Phase 4（AWS）へ進む
 
-```bash
-docker compose up --build
-```
+ROADMAP.md の Phase 4 に沿って AWS デプロイを開始する。
 
-確認ポイント：
-- `postgres` コンテナが起動する
-- `drizzle-kit migrate` が正常に実行される
-- `Drizzle seed completed` が表示される
-- `Server is running on http://localhost:3001` が表示される
-- `/drizzle/posts` エンドポイントへの GET / POST 疎通確認
+- AWS の基本構成を理解（ECS / ECR / ALB）
+- ECR に Docker イメージを push
+- ECS (Fargate) でコンテナをデプロイ
