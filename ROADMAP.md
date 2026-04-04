@@ -81,7 +81,6 @@
 - [x] PostgreSQL の基本概念を理解（SQLite / MySQL との違い）
 - [x] Docker Compose に PostgreSQL コンテナを追加（postgres:17-alpine）
 - [x] 機密情報を `.env` で管理（`env_file` で docker-compose に渡す）
-- [ ] Prisma スキーマを PostgreSQL 用に変更 — 方針変更: Prisma は SQLite のまま存続
 - [x] Drizzle スキーマを PostgreSQL 用に変更（`drizzle-orm/node-postgres`）
   - [x] `pg` / `@types/pg` パッケージ追加
   - [x] `drizzle/schema.ts` を `pg-core` に変更
