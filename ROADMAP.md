@@ -78,12 +78,19 @@
 
 ## Phase 3.5: PostgreSQL 移行
 
-- [ ] PostgreSQL の基本概念を理解（SQLite との違い）
-- [ ] Docker Compose に PostgreSQL コンテナを追加
-- [ ] Prisma スキーマを PostgreSQL 用に変更（`provider = "postgresql"`）
-- [ ] Drizzle スキーマを PostgreSQL 用に変更（`drizzle-orm/node-postgres`）
-- [ ] マイグレーション・シードの動作確認
-- [ ] hono-api から PostgreSQL への接続確認
+- [x] PostgreSQL の基本概念を理解（SQLite / MySQL との違い）
+- [x] Docker Compose に PostgreSQL コンテナを追加（postgres:17-alpine）
+- [x] 機密情報を `.env` で管理（`env_file` で docker-compose に渡す）
+- [ ] Prisma スキーマを PostgreSQL 用に変更 — 方針変更: Prisma は SQLite のまま存続
+- [x] Drizzle スキーマを PostgreSQL 用に変更（`drizzle-orm/node-postgres`）
+  - [x] `pg` / `@types/pg` パッケージ追加
+  - [x] `drizzle/schema.ts` を `pg-core` に変更
+  - [x] `drizzle.config.ts` を `dialect: "postgresql"` に変更
+  - [x] `src/lib/drizzle.ts` を `node-postgres` に変更
+  - [x] `drizzle/seed.ts` を `node-postgres` に変更
+  - [x] 古い SQLite 用マイグレーションファイルを削除
+- [ ] `docker compose up --build` でマイグレーション・シードの動作確認
+- [ ] hono-api から PostgreSQL への接続確認（GET / POST 疎通）
 
 ---
 

@@ -29,26 +29,34 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 3: Docker — 完了）
+## 現在の状況（Phase 3.5: PostgreSQL 移行 — 動作確認待ち）
 
-`nextjs-workspace/` をモノレポとして構成済み。docker-compose による2コンテナ連携・DevContainer 設定・ホットリロード対応まで完了。
+Drizzle を PostgreSQL に移行済み。Prisma は引き続き SQLite を使用。`docker compose up --build` での動作確認が次のステップ。
+
+### 方針
+
+- **Drizzle** → PostgreSQL（`drizzle-orm/node-postgres`）
+- **Prisma** → SQLite のまま存続（方針変更）
 
 ### 構成
 
 ```
 nextjs-workspace/
 ├── hono-api/
-│   ├── prisma/seed.ts     # Prisma シード（upsert で冪等）
-│   ├── drizzle/seed.ts    # Drizzle シード（onConflictDoNothing で冪等）
-│   └── package.json       # seed:prisma / seed:drizzle スクリプト追加済み
+│   ├── prisma/seed.ts     # Prisma シード（SQLite）
+│   ├── drizzle/
+│   │   ├── schema.ts      # pg-core に変更済み
+│   │   └── seed.ts        # node-postgres に変更済み
+│   ├── drizzle.config.ts  # dialect: "postgresql" に変更済み
+│   ├── src/lib/drizzle.ts # node-postgres に変更済み
+│   └── package.json       # pg / @types/pg 追加済み
 ├── nextjs/
 ├── .devcontainer/
-│   ├── hono-api/devcontainer.json   # service: "hono-api"
-│   └── nextjs/devcontainer.json     # service: "nextjs"
-├── .claude/commands/      # /update-docs カスタムコマンド
-├── pnpm-workspace.yaml
-├── package.json           # oxfmt / oxlint をルートに移動、pnpm.overrides
-├── docker-compose.yml     # hono-api + nextjs、volumes でホットリロード対応
+│   ├── hono-api/devcontainer.json
+│   └── nextjs/devcontainer.json
+├── .env                   # 機密情報（gitignore 済み）
+├── .env.example           # 項目のみコミット
+├── docker-compose.yml     # postgres サービス追加・env_file 対応
 └── pnpm-lock.yaml
 ```
 
@@ -63,45 +71,19 @@ nextjs-workspace/
 - `docker-compose.yml` 作成済み（hono-api + nextjs、内部ネットワーク経由で通信）
 - `actions.ts` / `client.ts` の URL をハードコードから環境変数（`HONO_API_URL`）に変更済み
 - マイグレーション + シードを `docker-compose.yml` の `command` で起動時に実行するよう設定済み
-- `hono-api/prisma/seed.ts` / `hono-api/drizzle/seed.ts` 作成済み（`onConflictDoNothing` で冪等）
-- `oxfmt` / `oxlint` をルート `package.json` に移動（プロジェクト全体で使用）
 - DevContainer を2サービス対応に構成（`.devcontainer/hono-api/` と `.devcontainer/nextjs/` に分割）
-- `docker-compose.yml` に `volumes` を追加してホットリロード対応（`tsx watch` が変更を検知できるように）
+- `docker-compose.yml` に `volumes` を追加してホットリロード対応
+- 機密情報を `.env` で管理し `env_file` で docker-compose に渡す構成に変更
 
-### 次回やること：Phase 3.5 — PostgreSQL 移行
+### 次回やること：`docker compose up --build` で動作確認
 
-SQLite から PostgreSQL へ移行し、本番環境に近い構成にする。
-
-#### 1. `docker-compose.yml` に PostgreSQL コンテナを追加
-
-```yaml
-  postgres:
-    image: postgres:16
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydb
-    ports:
-      - '5432:5432'
+```bash
+docker compose up --build
 ```
 
-#### 2. Prisma スキーマを PostgreSQL 用に変更
-
-`hono-api/prisma/schema.prisma` の `provider` を変更：
-
-```prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-```
-
-#### 3. Drizzle スキーマを PostgreSQL 用に変更
-
-`drizzle-orm/node-postgres` に切り替え。
-
-#### 4. 環境変数を更新
-
-```
-DATABASE_URL=postgresql://user:password@postgres:5432/mydb
-```
+確認ポイント：
+- `postgres` コンテナが起動する
+- `drizzle-kit migrate` が正常に実行される
+- `Drizzle seed completed` が表示される
+- `Server is running on http://localhost:3001` が表示される
+- `/drizzle/posts` エンドポイントへの GET / POST 疎通確認
