@@ -49,3 +49,4 @@ services:
       - /app/nextjs/node_modules
     depends_on:
       - hono-api
+    command: sh -c "pnpm --filter nextjs dev"
