@@ -30,6 +30,7 @@ services:
     command: >
       sh -c "
         pnpm exec prisma migrate deploy &&
+        pnpm exec drizzle-kit generate &&
         pnpm exec drizzle-kit migrate &&
         pnpm seed:prisma &&
         pnpm seed:drizzle &&
@@ -39,6 +40,7 @@ services:
     build:
       context: .
       dockerfile: nextjs/Dockerfile
+      target: builder
     ports:
       - '3000:3000'
     environment:
