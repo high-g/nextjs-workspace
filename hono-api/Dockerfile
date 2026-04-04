@@ -3,6 +3,7 @@ WORKDIR /app
 
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY hono-api/package.json ./hono-api/
+COPY nextjs/package.json ./nextjs/
 
 RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 RUN apk add --no-cache python3 make g++
