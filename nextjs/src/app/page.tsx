@@ -2,9 +2,8 @@ import Counter from "@/components/Counter";
 import { drizzleSubmitMessage } from "./actions";
 import { client } from "@/lib/client";
 
-// Drizzle 経由
 async function getDrizzlePost() {
-  const res = await client.drizzle.$get({}, { init: { cache: "no-store" } });
+  const res = await client.index.$get({}, { init: { cache: "no-store" } });
   return res.json();
 }
 
