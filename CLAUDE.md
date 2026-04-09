@@ -114,6 +114,49 @@ EC2 → インスタンスプロファイル → IAM ロール という構造�
 「今この CLI を使っているのは誰か」を返すサービス。
 `aws sts get-caller-identity` で認証確認に使う。AssumeRole（他のロールへの切り替え）もここ経由。
 
+### ネットワーク・Linux 基礎
+
+**VPC（Virtual Private Cloud）**
+AWSの中に作る自分専用の仮想ネットワーク。CIDR（例: `10.0.0.0/16`）でIPアドレス範囲を定義し、サブネットで細分化する。
+
+**CIDR（Classless Inter-Domain Routing）**
+IPアドレスの範囲を表す記法。`/16` = 65,536個、`/24` = 256個、`/32` = 1個。数字が大きいほど範囲が狭い。
+セキュリティグループで `0.0.0.0/0` は「全IPを許可」、`x.x.x.x/32` は「特定の1IPのみ許可」。
+
+**NAT（Network Address Translation）**
+プライベートサブネットのEC2がインターネットに出るための仕組み。内→外は可能、外→内は不可（一方通行）。自宅ルーターと同じ仕組み。
+
+**NACL（Network Access Control List）**
+サブネット単位のファイアウォール。ステートレス（行きと帰りを個別に許可する必要あり）。実務ではデフォルト（全許可）のまま使い、セキュリティグループで制御するのが基本。
+
+**ステートフル vs ステートレス**
+- ステートフル（セキュリティグループ）: 通信の状態を覚えている。インバウンドを許可すれば戻り通信は自動許可。
+- ステートレス（NACL）: 毎回ゼロから判断。行きと帰りを両方明示的に設定する必要がある。
+
+**ARN（Amazon Resource Name）**
+AWSリソースを一意に識別するID。形式: `arn:aws:サービス:リージョン:アカウントID:リソース`。
+IAMポリシーでリソースを指定する時や、ログでリソースを特定する時に使う。読み方は「アーン」。
+
+### Linux・SSH 基礎
+
+**chmod の数字表記**
+`r=4, w=2, x=1` の足し算。`400` = 所有者のみ読み取り可（秘密鍵に使う）、`644` = 所有者が読み書き可・他は読み取りのみ、`777` = 全員が全操作可（危険）。
+
+**キーペア（SSH）**
+EC2接続のための公開鍵・秘密鍵のペア。秘密鍵（`.pem`）はダウンロード後 `chmod 400` で保護する。`chmod 400` にしないとSSHが「鍵が危険」として拒否する。
+
+**systemctl**
+Linuxのサービス（常駐プロセス）を管理するコマンド。`start` で起動、`enable` でOS起動時の自動起動設定。セットで使うのが基本。
+
+**usermod -aG**
+ユーザーをグループに追加するコマンド。`-a`（追加）`-G`（グループ指定）。Dockerを `sudo` なしで使うには `ec2-user` を `docker` グループに追加する。反映にはSSH再接続が必要。
+
+**yum**
+Amazon Linux（Red Hat系）のパッケージマネージャー。Mac の `brew`、Ubuntu の `apt` と同じ役割。
+
+**PATH と `/usr/local/bin`**
+`/usr/local/bin` は PATH に含まれているため、ここにバイナリを置くとコマンド名だけで実行できる。`chmod +x` で実行権限を付与する必要がある。
+
 ### デプロイパターン
 
 **EC2 + CodeDeploy パターン**
@@ -138,10 +181,39 @@ aws sts get-caller-identity
 - ポリシー: AmazonEC2FullAccess / AmazonS3FullAccess / AWSCodeDeployFullAccess / IAMReadOnlyAccess
 - `~/.aws/credentials` の `[default]` プロファイルに設定済み
 
-### 次回やること：VPC 基礎の理解 → EC2 起動
+### 完了済み：EC2 起動・Docker セットアップ
 
-1. VPC・サブネット・セキュリティグループの概念を理解（ROADMAP.md のネットワーク基礎セクション）
-2. EC2 インスタンス起動（Amazon Linux 2023 / t2.micro）
-3. SSH 接続して Docker をインストール
-4. リポジトリを clone して `docker compose up --build`
-5. セキュリティグループでポート 3000 / 3001 を開放して疎通確認
+- EC2 インスタンス `nextjs-server`（Amazon Linux 2023 / t3.micro）起動済み
+- SSH 接続確認済み（キーペア: `~/.ssh/nextjs-server-key.pem`、パーミッション: 400）
+- Docker インストール・起動・自動起動設定済み（`systemctl enable docker`）
+- `ec2-user` を `docker` グループに追加済み（`sudo` なしで `docker` 使用可能）
+- Docker Compose（v5.1.2）インストール済み（`/usr/local/bin/docker-compose`）
+- buildx（v0.23.0）インストール済み（`/usr/local/lib/docker/cli-plugins/docker-buildx`）
+- リポジトリ clone 済み・`.env` 作成済み
+
+### 次回やること：docker-compose up --build の完了 → 疎通確認
+
+t3.micro のメモリ不足で `docker-compose up --build` が途中で止まった。
+まずスワップを追加してからビルドを再実行する。
+
+```bash
+# SSH 接続
+ssh -i ~/.ssh/nextjs-server-key.pem ec2-user@13.193.222.75
+
+# スワップ追加（メモリ不足対策）
+sudo dd if=/dev/zero of=/swapfile bs=128M count=16
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+
+# スワップ確認
+free -h
+
+# ビルド再実行
+cd nextjs-workspace
+docker-compose up --build
+```
+
+ビルド成功後：
+1. セキュリティグループでポート 3000 / 3001 を開放
+2. ブラウザから `http://13.193.222.75:3000` でアクセス確認
