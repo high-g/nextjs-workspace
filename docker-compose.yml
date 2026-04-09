@@ -27,10 +27,8 @@ services:
         condition: service_healthy
     command: >
       sh -c "
-        pnpm exec prisma migrate deploy &&
         pnpm exec drizzle-kit generate &&
         pnpm exec drizzle-kit migrate &&
-        pnpm seed:prisma &&
         pnpm seed:drizzle &&
         pnpm dev
       "

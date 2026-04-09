@@ -1,11 +1,8 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
-import { prismaPostsRoutes } from "./routes/prismaPosts";
 import { drizzlePostRoutes } from "./routes/drizzlePosts";
 
-const app = new Hono()
-  .route("/prisma", prismaPostsRoutes)
-  .route("/drizzle", drizzlePostRoutes);
+const app = new Hono().route("/", drizzlePostRoutes);
 
 export type AppType = typeof app;
 
