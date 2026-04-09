@@ -121,7 +121,9 @@
   - [x] Docker インストール（yum）・起動・自動起動設定
   - [x] Docker Compose インストール（GitHub から直接ダウンロード）
   - [x] buildx インストール（docker-compose up --build に必要）
-  - [ ] リポジトリを clone して `docker-compose up --build` で起動確認（メモリ不足で中断中）
+  - [x] スワップ追加（2GB）— t3.micro のメモリ不足対策
+  - [x] Prisma 削除（PostgreSQL + Drizzle 構成に統一）
+  - [ ] ローカルの変更を push → EC2 で git pull → `docker-compose up --build` で起動確認
 - [ ] セキュリティグループでポート開放（22 / 3000 / 3001）
 - [ ] S3 バケット作成（デプロイ成果物置き場）
   - [ ] S3 の基本概念 — バケット・オブジェクト・プレフィックス

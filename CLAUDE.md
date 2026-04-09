@@ -191,26 +191,30 @@ aws sts get-caller-identity
 - buildx（v0.23.0）インストール済み（`/usr/local/lib/docker/cli-plugins/docker-buildx`）
 - リポジトリ clone 済み・`.env` 作成済み
 
-### 次回やること：docker-compose up --build の完了 → 疎通確認
+### 完了済み：スワップ追加・Prisma 削除
 
-t3.micro のメモリ不足で `docker-compose up --build` が途中で止まった。
-まずスワップを追加してからビルドを再実行する。
+- スワップ 2GB 追加済み（`/swapfile`）— t3.micro のメモリ不足対策
+- Prisma を削除して PostgreSQL + Drizzle 構成に統一
+  - 削除: `hono-api/src/routes/prismaPosts.ts` / `src/lib/prisma.ts` / `src/generated/` / `prisma/` / `prisma.config.ts`
+  - `hono-api/src/index.ts` を Drizzle のみに変更
+  - `hono-api/package.json` から Prisma 関連パッケージを削除
+  - `docker-compose.yml` の command から `prisma migrate deploy` / `seed:prisma` を削除
+  - `hono-api/Dockerfile` から Prisma 関連の COPY・コマンドを削除
+- ルートを `.route("/", drizzlePostRoutes)` に変更（Hono RPC では `client.index.$get()` でアクセス）
+
+### 次回やること：ローカルの変更を push → EC2 で git pull → ビルド確認
 
 ```bash
-# SSH 接続
+# ローカルで pnpm install 後に push
+pnpm install
+git add -A
+git commit -m "chore: remove prisma, unify to drizzle + postgresql"
+git push
+
+# EC2 で git pull → ビルド
 ssh -i ~/.ssh/nextjs-server-key.pem ec2-user@13.193.222.75
-
-# スワップ追加（メモリ不足対策）
-sudo dd if=/dev/zero of=/swapfile bs=128M count=16
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-
-# スワップ確認
-free -h
-
-# ビルド再実行
 cd nextjs-workspace
+git pull
 docker-compose up --build
 ```
 
