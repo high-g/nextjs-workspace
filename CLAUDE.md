@@ -32,11 +32,13 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 ## 現在の状況（Phase 4: AWS — EC2 デプロイ 進行中）
 
 Phase 3.5（PostgreSQL 移行）完了。Phase 4 として EC2 への直接デプロイから始める方針。
+AWS SAA（Solutions Architect Associate）合格もモチベーションに追加。ROADMAP.md に SAA 対応項目を各 Phase に組み込み済み。
 
 ### 方針
 
 - まず EC2 に Docker で直接デプロイして AWS の基本を掴む
 - その後 ECS / ECR を使った本格運用構成へ移行
+- 実践を通じて SAA の試験範囲（VPC・EC2・S3・RDS・Lambda 等）を習得する
 
 ### 構成
 
@@ -95,6 +97,22 @@ AWS のアクセス権限管理サービス。「誰が何をできるか」を�
 
 **アクセスキーとシークレットキー**
 CLI や GitHub Actions が AWS を操作するための認証情報。パスワードと同じ扱いで厳重に管理する。漏洩したらすぐ無効化して再発行。
+`~/.aws/credentials` に保存される。複数プロファイル（`[default]` / `[ecr]` 等）を持てるが、プロファイル指定がなければ `[default]` が使われる。
+
+**IAM ポリシー vs ロールの違い**
+- **ポリシー**: 「何ができるか」を定義した JSON ドキュメント。単体では機能しない。
+- **ロール**: ポリシーを束ねて「誰かに渡せる」パッケージ。「誰が使えるか（信頼ポリシー）」も持つ。
+  - EC2・Lambda・ECS・GitHub Actions など「人以外」に権限を与えるために使う
+  - 名前に「ロール」とあれば IAM ロールのこと（AWS 全体で共通の概念）
+
+**インスタンスプロファイル**
+IAM ロールを EC2 に直接アタッチできないため存在する中間の入れ物。
+EC2 → インスタンスプロファイル → IAM ロール という構造になっている。
+ロールを削除する前にプロファイルから外す必要がある（`remove-role-from-instance-profile`）。
+
+**STS（Security Token Service）**
+「今この CLI を使っているのは誰か」を返すサービス。
+`aws sts get-caller-identity` で認証確認に使う。AssumeRole（他のロールへの切り替え）もここ経由。
 
 ### デプロイパターン
 
@@ -108,19 +126,22 @@ CLI や GitHub Actions が AWS を操作するための認証情報。パスワ�
 - ECS: コンテナを動かすサービス。サーバー管理不要（Fargate モード）
 - 流れ: `GitHub Actions → ECR に push → ECS が自動で pull・起動`
 
-### 次回やること：IAM セットアップ → EC2 起動
+### 完了済み：IAM セットアップ
 
 ```bash
-# IAM アクセスキー発行後、ターミナルで実行
-aws configure
-# → Access Key ID / Secret Access Key / ap-northeast-1 / json を入力
-
-# 設定確認
+# 設定確認（完了済み）
 aws sts get-caller-identity
+# → nextjs-user の ARN が返ってくれば OK
 ```
 
-その後：
-1. EC2 インスタンス起動（Amazon Linux 2023 / t2.micro）
-2. SSH 接続して Docker をインストール
-3. リポジトリを clone して `docker compose up --build`
-4. セキュリティグループでポート 3000 / 3001 を開放して疎通確認
+- IAM ユーザー `nextjs-user` 作成済み
+- ポリシー: AmazonEC2FullAccess / AmazonS3FullAccess / AWSCodeDeployFullAccess / IAMReadOnlyAccess
+- `~/.aws/credentials` の `[default]` プロファイルに設定済み
+
+### 次回やること：VPC 基礎の理解 → EC2 起動
+
+1. VPC・サブネット・セキュリティグループの概念を理解（ROADMAP.md のネットワーク基礎セクション）
+2. EC2 インスタンス起動（Amazon Linux 2023 / t2.micro）
+3. SSH 接続して Docker をインストール
+4. リポジトリを clone して `docker compose up --build`
+5. セキュリティグループでポート 3000 / 3001 を開放して疎通確認
