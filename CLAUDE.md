@@ -202,22 +202,19 @@ aws sts get-caller-identity
   - `hono-api/Dockerfile` から Prisma 関連の COPY・コマンドを削除
 - ルートを `.route("/", drizzlePostRoutes)` に変更（Hono RPC では `client.index.$get()` でアクセス）
 
-### 次回やること：ローカルの変更を push → EC2 で git pull → ビルド確認
+### 完了済み：EC2 デプロイ・疎通確認
 
-```bash
-# ローカルで pnpm install 後に push
-pnpm install
-git add -A
-git commit -m "chore: remove prisma, unify to drizzle + postgresql"
-git push
+- ポート 3000 / 3001 をセキュリティグループで開放済み
+- `http://13.193.222.75:3000` でNext.js画面の表示確認済み
+- Hono API 経由で PostgreSQL への登録・取得も確認済み
 
-# EC2 で git pull → ビルド
-ssh -i ~/.ssh/nextjs-server-key.pem ec2-user@13.193.222.75
-cd nextjs-workspace
-git pull
-docker-compose up --build
-```
+### 次回やること：CodeDeploy による自動デプロイ
 
-ビルド成功後：
-1. セキュリティグループでポート 3000 / 3001 を開放
-2. ブラウザから `http://13.193.222.75:3000` でアクセス確認
+GitHub に push したら自動で EC2 に反映される仕組みを構築する。
+
+1. S3 バケット作成（デプロイ成果物置き場）
+2. EC2 に CodeDeploy エージェントをインストール
+3. IAM ロール作成（CodeDeploy 用・EC2 用）
+4. CodeDeploy アプリケーション・デプロイグループ作成
+5. `appspec.yml` とデプロイスクリプト作成
+6. GitHub Actions ワークフロー作成

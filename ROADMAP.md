@@ -117,14 +117,15 @@
   - [x] AMI とは何か — スナップショットとの違い
   - [x] EBS ボリュームの種類（gp2/gp3/io1）と用途
   - [x] インスタンスタイプの選び方（t系・m系・c系の違い）
-- [ ] EC2 に Docker / Docker Compose / CodeDeploy エージェントをインストール
+- [x] EC2 に Docker / Docker Compose / CodeDeploy エージェントをインストール
   - [x] Docker インストール（yum）・起動・自動起動設定
   - [x] Docker Compose インストール（GitHub から直接ダウンロード）
   - [x] buildx インストール（docker-compose up --build に必要）
   - [x] スワップ追加（2GB）— t3.micro のメモリ不足対策
   - [x] Prisma 削除（PostgreSQL + Drizzle 構成に統一）
-  - [ ] ローカルの変更を push → EC2 で git pull → `docker-compose up --build` で起動確認
-- [ ] セキュリティグループでポート開放（22 / 3000 / 3001）
+  - [x] ローカルの変更を push → EC2 で git pull → `docker-compose up --build` で起動確認
+- [x] セキュリティグループでポート開放（22 / 3000 / 3001）
+- [x] ブラウザから EC2 パブリック IP でアクセス確認（Next.js + Hono API + DB 疎通）
 - [ ] S3 バケット作成（デプロイ成果物置き場）
   - [ ] S3 の基本概念 — バケット・オブジェクト・プレフィックス
   - [ ] ストレージクラスの種類（Standard / IA / Glacier）と使い分け
@@ -137,7 +138,6 @@
   - [ ] 成果物を S3 に upload
   - [ ] CodeDeploy デプロイを起動
 - [ ] push をトリガーに EC2 へ自動デプロイされることを確認
-- [ ] ブラウザから EC2 パブリック IP でアクセス確認
 - [ ] Auto Scaling の概念を理解 — 起動テンプレート・スケーリングポリシー
 
 ### パターン2: ECS + ECR（SAA: ECS・ALB・CloudFront）
