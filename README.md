@@ -6,10 +6,10 @@ Next.js + Hono + ORM + Docker + AWS の基礎を学ぶための学習用モノ�
 
 - **Next.js 16** (App Router)
 - **Hono** (バックエンド API)
-- **ORM**: Prisma（SQLite）/ Drizzle（PostgreSQL）
-- **DB**: SQLite（Prisma）/ PostgreSQL（Drizzle）
+- **ORM**: Drizzle（PostgreSQL）
+- **DB**: PostgreSQL
 - **Docker** / Docker Compose / DevContainer
-- **AWS** (ECS / ECR / ALB) — 予定
+- **AWS** EC2 / CodeDeploy / ECS / ECR
 - **Vercel** / **Cloudflare** — 予定
 
 ## 構成
@@ -18,7 +18,6 @@ Next.js + Hono + ORM + Docker + AWS の基礎を学ぶための学習用モノ�
 nextjs-workspace/
 ├── hono-api/              # Hono バックエンド API
 │   ├── src/
-│   ├── prisma/            # Prisma スキーマ・マイグレーション・シード（SQLite）
 │   └── drizzle/           # Drizzle スキーマ・マイグレーション・シード（PostgreSQL）
 ├── nextjs/                # Next.js フロントエンド
 │   └── src/
@@ -45,7 +44,7 @@ docker compose up --build
 | Next.js | http://localhost:3000 |
 | Hono API | http://localhost:3001 |
 
-起動時に Prisma / Drizzle のマイグレーションとシードが自動実行されます。
+起動時に Drizzle のマイグレーションとシードが自動実行されます。
 
 ### DevContainer で開発
 
@@ -71,8 +70,12 @@ pnpm dev:web   # nextjs を起動
 | Phase 2.6 | Drizzle CRUD | 完了 |
 | Phase 3 | Docker / DevContainer | 完了 |
 | Phase 3.5 | PostgreSQL 移行 | 完了 |
-| Phase 4 | AWS デプロイ | 進行中 |
+| Phase 4 | AWS EC2 直接デプロイ | 完了 |
+| Phase 4 | AWS CodeDeploy 自動デプロイ | 進行中 |
+| Phase 4 | AWS ECS + ECR | 未着手 |
 | Phase 5 | Vercel デプロイ | 未着手 |
 | Phase 6 | Cloudflare デプロイ | 未着手 |
+| Phase 7 | Next.js 16.2 の理解 | 未着手 |
+| Phase 8 | React 19 の理解 | 未着手 |
 
 詳細は [ROADMAP.md](./ROADMAP.md) を参照。

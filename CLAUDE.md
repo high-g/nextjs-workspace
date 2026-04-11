@@ -29,23 +29,22 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 4: AWS — EC2 デプロイ 進行中）
+## 現在の状況（Phase 4: AWS — CodeDeploy 進行中）
 
-Phase 3.5（PostgreSQL 移行）完了。Phase 4 として EC2 への直接デプロイから始める方針。
-AWS SAA（Solutions Architect Associate）合格もモチベーションに追加。ROADMAP.md に SAA 対応項目を各 Phase に組み込み済み。
+EC2 への直接デプロイ（4/4〜4/10）完了。現在は CodeDeploy による自動デプロイ（4/11〜4/15）を構築中。
+SAA 取得は一旦スコープ外とし、実践的なデプロイ構成の習得に集中する方針に変更。
 
 ### 方針
 
-- まず EC2 に Docker で直接デプロイして AWS の基本を掴む
-- その後 ECS / ECR を使った本格運用構成へ移行
-- 実践を通じて SAA の試験範囲（VPC・EC2・S3・RDS・Lambda 等）を習得する
+- EC2 + CodeDeploy で push → 自動デプロイの仕組みを構築する
+- その後 ECS / ECR を使ったコンテナ運用構成（4/16〜4/20）へ移行
+- Vercel → Cloudflare → Next.js/React の新機能理解へと進む
 
 ### 構成
 
 ```
 nextjs-workspace/
 ├── hono-api/
-│   ├── prisma/seed.ts     # Prisma シード（SQLite）
 │   ├── drizzle/
 │   │   ├── schema.ts      # pg-core に変更済み
 │   │   └── seed.ts        # node-postgres に変更済み
@@ -169,6 +168,23 @@ Amazon Linux（Red Hat系）のパッケージマネージャー。Mac の `brew
 - ECS: コンテナを動かすサービス。サーバー管理不要（Fargate モード）
 - 流れ: `GitHub Actions → ECR に push → ECS が自動で pull・起動`
 
+### S3・CodeDeploy 関連
+
+**S3 バケット**
+- S3 の保存領域の単位。バケット名はグローバル（全世界・全アカウント）で一意である必要がある
+- アカウントID をバケット名に含めるのが慣習（例: `nextjs-deploy-artifacts-513148686116`）
+- 今回の用途: GitHub Actions がデプロイ成果物（zip）を置く場所として使用
+
+**CodeDeploy エージェント**
+- EC2 上で常駐する Ruby 製のプロセス
+- AWS CodeDeploy サービスに定期的に「デプロイ指示来てる？」と問い合わせる（ポーリング）
+- インストール方法: AWS 公式 S3 バケット（`aws-codedeploy-ap-northeast-1`）からスクリプトをダウンロードして実行
+
+**インプレースデプロイ vs Blue/Green デプロイ**
+- インプレース: 既存のEC2インスタンスを停止 → 新しいコードで起動（シンプル・ダウンタイムあり）
+- Blue/Green: 新しいインスタンスを別途用意して切り替え（ダウンタイムなし・コスト高）
+- 学習用途ではインプレースで十分
+
 ### 完了済み：IAM セットアップ
 
 ```bash
@@ -208,13 +224,24 @@ aws sts get-caller-identity
 - `http://13.193.222.75:3000` でNext.js画面の表示確認済み
 - Hono API 経由で PostgreSQL への登録・取得も確認済み
 
-### 次回やること：CodeDeploy による自動デプロイ
+### 完了済み：CodeDeploy セットアップ（4/11 時点）
 
-GitHub に push したら自動で EC2 に反映される仕組みを構築する。
+- S3 バケット作成済み（`nextjs-deploy-artifacts-513148686116`、ap-northeast-1）
+- CodeDeploy エージェントを EC2 にインストール・起動確認済み（`systemctl status codedeploy-agent`）
+- IAM ロール作成済み
+  - `CodeDeployRole`: CodeDeployサービスがEC2を操作するためのロール（`AWSCodeDeployRole` ポリシー）
+  - `EC2CodeDeployRole`: EC2がS3からzipを取得するためのロール（`AmazonS3ReadOnlyAccess` / `AmazonEC2RoleforAWSCodeDeploy`）
+- `nextjs-server` インスタンスに `EC2CodeDeployRole` をアタッチ済み
+- CodeDeploy アプリケーション `nextjs-app` 作成済み
+- デプロイグループ `nextjs-deploy-group` 作成済み（インプレース / EC2タグ: Name=nextjs-server / ロードバランサーなし）
+- SSH 接続ショートカット設定済み（`~/.ssh/config` に `Host nextjs-server` 追加）
 
-1. S3 バケット作成（デプロイ成果物置き場）
-2. EC2 に CodeDeploy エージェントをインストール
-3. IAM ロール作成（CodeDeploy 用・EC2 用）
-4. CodeDeploy アプリケーション・デプロイグループ作成
-5. `appspec.yml` とデプロイスクリプト作成
-6. GitHub Actions ワークフロー作成
+### 次回やること：appspec.yml とデプロイスクリプト・GitHub Actions の作成
+
+GitHub に push したら自動で EC2 に反映される仕組みを完成させる。
+
+1. `appspec.yml` をリポジトリルートに作成
+2. デプロイスクリプト（`scripts/deploy.sh` など）を作成
+3. GitHub Actions ワークフロー（`.github/workflows/deploy.yml`）を作成
+   - コードをzip化 → S3にアップロード → CodeDeployにデプロイ指示
+4. push をトリガーに EC2 へ自動デプロイされることを確認
