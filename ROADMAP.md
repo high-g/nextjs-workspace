@@ -1,5 +1,22 @@
 # 学習ロードマップ: Next.js 16 + Hono + Docker + AWS
 
+## スケジュール
+
+| 期間 | 内容 |
+|---|---|
+| 3/15〜 | Next.js 16（SSR・RSC・Server Actions・Vercel Deploy・Route Handler・Middleware） |
+| 3/23〜 | Hono（基本ルーティング・GET/POST・Hono RPC・Zod連携） |
+| 3/30〜 | Prisma / Drizzle（サーバーサイドTSで利用するORMを理解） |
+| 4/1〜 | Docker（Dockerfile・docker build/run・docker compose・DevContainer） |
+| 4/2〜4/4 | DB移行（SQLite → PostgreSQL） |
+| 4/4〜4/10 | AWS EC2 + Next.js + Hono（EC2上でHono、Next.jsを動作させる）✅ |
+| 4/11〜4/15 | CodeDeploy（自動デプロイ） |
+| 4/16〜4/20 | AWS ECS + Next.js + Hono |
+| 4/21〜4/23 | Vercel + Next.js + Hono |
+| 4/24〜4/28 | Cloudflare + Next.js + Hono |
+| 4/29〜5/3 | Next.js 16.2 の理解 |
+| 5/4〜5/8 | React 19 の理解 |
+
 ## Phase 1: Next.js
 
 - [x] Next.js 16 環境構築 (pnpm + Vercel デプロイ)
@@ -93,107 +110,39 @@
 
 ---
 
-## Phase 4: AWS
+## Phase 4: AWS（4/4〜4/20）
 
-### 準備・IAM（SAA: IAM）
+### EC2 直接デプロイ（4/4〜4/10 完了）
 
-- [x] IAM ユーザー作成・アクセスキー発行
-- [x] AWS CLI セットアップ（`aws configure`）
-- [x] IAM の基本概念を理解 — ユーザー・グループ・ロール・ポリシーの関係
-- [x] インスタンスプロファイルとは何か（EC2 へのロールアタッチの仕組み）
-- [ ] 最小権限の原則 — FullAccess vs カスタムポリシーの使い分け
-
-### ネットワーク基礎（SAA: VPC）
-
-- [x] VPC の概念を理解 — リージョン・AZ・サブネットの関係
-- [x] パブリックサブネット vs プライベートサブネットの違い
-- [x] インターネットゲートウェイ（IGW）と NATゲートウェイの役割
-- [x] セキュリティグループ vs NACL の違い（ステートフル vs ステートレス）
-- [ ] ルートテーブルの仕組みを理解
-
-### パターン1: EC2 + CodeDeploy（SAA: EC2・S3）
-
+- [x] IAM ユーザー作成・アクセスキー発行・AWS CLI セットアップ
+- [x] IAM の基本概念を理解 — ユーザー・ロール・ポリシー・インスタンスプロファイル
+- [x] VPC の基本概念を理解 — サブネット・IGW・セキュリティグループ・NACL
 - [x] EC2 インスタンス起動（Amazon Linux 2023 / t3.micro）
-  - [x] AMI とは何か — スナップショットとの違い
-  - [x] EBS ボリュームの種類（gp2/gp3/io1）と用途
-  - [x] インスタンスタイプの選び方（t系・m系・c系の違い）
-- [x] EC2 に Docker / Docker Compose / CodeDeploy エージェントをインストール
-  - [x] Docker インストール（yum）・起動・自動起動設定
-  - [x] Docker Compose インストール（GitHub から直接ダウンロード）
-  - [x] buildx インストール（docker-compose up --build に必要）
-  - [x] スワップ追加（2GB）— t3.micro のメモリ不足対策
-  - [x] Prisma 削除（PostgreSQL + Drizzle 構成に統一）
-  - [x] ローカルの変更を push → EC2 で git pull → `docker-compose up --build` で起動確認
+- [x] EC2 に Docker / Docker Compose / buildx インストール・スワップ追加
 - [x] セキュリティグループでポート開放（22 / 3000 / 3001）
 - [x] ブラウザから EC2 パブリック IP でアクセス確認（Next.js + Hono API + DB 疎通）
-- [ ] S3 バケット作成（デプロイ成果物置き場）
-  - [ ] S3 の基本概念 — バケット・オブジェクト・プレフィックス
-  - [ ] ストレージクラスの種類（Standard / IA / Glacier）と使い分け
-  - [ ] バージョニング・ライフサイクルポリシーの概念
-  - [ ] バケットポリシー vs ACL の違い
-- [ ] CodeDeploy アプリケーション・デプロイグループ作成
+
+### CodeDeploy による自動デプロイ（4/11〜4/15）
+
+- [x] S3 バケット作成（`nextjs-deploy-artifacts-513148686116`）
+- [x] CodeDeploy エージェントを EC2 にインストール
+- [x] IAM ロール作成（`CodeDeployRole` / `EC2CodeDeployRole`）
+- [x] EC2 インスタンスに `EC2CodeDeployRole` をアタッチ
+- [x] CodeDeploy アプリケーション・デプロイグループ作成
 - [ ] `appspec.yml` と デプロイスクリプト作成
-- [ ] GitHub Actions ワークフロー作成
-  - [ ] Docker イメージをビルド
-  - [ ] 成果物を S3 に upload
-  - [ ] CodeDeploy デプロイを起動
+- [ ] GitHub Actions ワークフロー作成（zip → S3 → CodeDeploy）
 - [ ] push をトリガーに EC2 へ自動デプロイされることを確認
-- [ ] Auto Scaling の概念を理解 — 起動テンプレート・スケーリングポリシー
 
-### パターン2: ECS + ECR（SAA: ECS・ALB・CloudFront）
+### ECS + ECR（4/16〜4/20）
 
-- [ ] ECS / ECR / ALB の基本構成を理解
-- [ ] ECR リポジトリ作成
-- [ ] ECS タスク定義・サービス作成
-  - [ ] タスクロール vs タスク実行ロールの違い
-  - [ ] Fargate vs EC2 起動タイプの比較
+- [ ] ECS / ECR の基本構成を理解
+- [ ] ECR リポジトリ作成・Docker イメージを push
+- [ ] ECS タスク定義・サービス作成（Fargate）
 - [ ] GitHub Actions でビルド → ECR push → ECS 自動デプロイ
-- [ ] ALB でロードバランシング
-  - [ ] ALB / NLB / CLB の使い分け
-  - [ ] ターゲットグループ・ヘルスチェックの仕組み
-- [ ] 独自ドメイン + HTTPS（Route 53 + ACM）
-  - [ ] Route 53 のレコードタイプ（A / CNAME / Alias）の違い
-  - [ ] ACM 証明書の仕組みと自動更新
-- [ ] CloudFront を使った CDN 配信
-  - [ ] オリジン・ディストリビューション・キャッシュの概念
-  - [ ] S3 静的ホスティング + CloudFront の構成
-
-### サーバーレス・マネージドサービス（SAA: Lambda・RDS・DynamoDB）
-
-- [ ] Lambda の基本 — イベント駆動・コールドスタートの概念
-  - [ ] API Gateway + Lambda で簡単な API を作る
-  - [ ] Lambda の同時実行数・タイムアウト・メモリ設定
-- [ ] RDS の基本概念
-  - [ ] マルチAZ配置 vs リードレプリカの違い
-  - [ ] RDS vs Aurora の使い分け
-  - [ ] 自動バックアップ・スナップショットの仕組み
-- [ ] DynamoDB の基本
-  - [ ] パーティションキー・ソートキーの設計
-  - [ ] RDS（リレーショナル）との使い分け基準
-  - [ ] オンデマンド vs プロビジョンドキャパシティ
-
-### メッセージング・監視（SAA: SQS・SNS・CloudWatch）
-
-- [ ] SQS の基本 — キュー・メッセージの概念
-  - [ ] スタンダードキュー vs FIFO キューの違い
-  - [ ] デッドレターキュー（DLQ）の役割
-- [ ] SNS の基本 — トピック・サブスクリプションの概念
-  - [ ] SNS + SQS のファンアウトパターン
-- [ ] CloudWatch でメトリクス・ログを確認
-  - [ ] アラーム・ダッシュボードの設定
-  - [ ] CloudTrail との違い（操作ログ vs メトリクス）
-
-### セキュリティ（SAA: KMS・Secrets Manager・WAF）
-
-- [ ] KMS の基本 — 暗号化キーの管理
-  - [ ] S3 / RDS の暗号化との連携
-- [ ] Secrets Manager vs SSM Parameter Store の使い分け
-- [ ] WAF の基本概念 — ALB / CloudFront との組み合わせ
-- [ ] Shield の概念（DDoS 対策）
 
 ---
 
-## Phase 5: Vercel デプロイ
+## Phase 5: Vercel デプロイ（4/21〜4/23）
 
 - [ ] Next.js を Vercel にデプロイ
 - [ ] Hono API を Vercel Functions としてデプロイ
@@ -202,7 +151,7 @@
 
 ---
 
-## Phase 6: Cloudflare デプロイ
+## Phase 6: Cloudflare デプロイ（4/24〜4/28）
 
 - [ ] Cloudflare Pages に Next.js をデプロイ
 - [ ] Hono API を Cloudflare Workers としてデプロイ
@@ -211,18 +160,17 @@
 
 ---
 
-## 追加学習: その他 ORM
+## Phase 7: Next.js 16.2 の理解（4/29〜5/3）
 
-- [ ] Kysely を試す — SQL に近いクエリビルダーの書き心地を体験
-- [ ] MikroORM を試す — フル機能 ORM との比較
+- [ ] Next.js 16.2 の新機能を把握
+- [ ] 既存コードへの影響を確認・対応
 
 ---
 
-## 追加学習: RSC の深掘り
+## Phase 8: React 19 の理解（5/4〜5/8）
 
-- [ ] RSC と SSR/SSG/ISR の関係性を改めて整理
-- [ ] Pages Router 時代との比較
-- [ ] コンポーネント単位でのレンダリング戦略の制御
+- [ ] React 19 の新機能を把握（Actions・use フック など）
+- [ ] Next.js App Router との関係を整理
 
 ---
 
