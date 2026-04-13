@@ -19,7 +19,7 @@ export default async function Home() {
 
       <hr className="my-4" />
 
-      <h2 className="text-xl font-bold mb-4">Drizzle Posts</h2>
+      <h2 className="text-xl font-bold mb-4">Posts</h2>
       <form action={drizzleSubmitMessage} className="flex gap-2">
         <input
           name="message"
