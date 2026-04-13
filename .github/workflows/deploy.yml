@@ -26,8 +26,8 @@ jobs:
         run: |
           aws deploy create-deployment \
             --application-name nextjs-app \
-            --deployment-group-name nextjs-deloyment-group \
-            --s3-location bucket-nextjs-deploy-artifacts-513148686116,key=deploy.zip,bundleType=zip
+            --deployment-group-name nextjs-deloy-group \
+            --s3-location bucket=nextjs-deploy-artifacts-513148686116,key=deploy.zip,bundleType=zip
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
