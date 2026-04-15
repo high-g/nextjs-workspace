@@ -5,6 +5,10 @@ files:
     destination: /home/ec2-user/nextjs-workspace
     overwrite: yes
 hooks:
+  BeforeInstall:
+    - location: scripts/before_install.sh
+      timeout: 60
+      runas: ec2-user
   AfterInstall:
     - location: scripts/deploy.sh
       timeout: 600
