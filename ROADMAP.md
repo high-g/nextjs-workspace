@@ -10,7 +10,7 @@
 | 4/1〜 | Docker（Dockerfile・docker build/run・docker compose・DevContainer） |
 | 4/2〜4/4 | DB移行（SQLite → PostgreSQL） |
 | 4/4〜4/10 | AWS EC2 + Next.js + Hono（EC2上でHono、Next.jsを動作させる）✅ |
-| 4/11〜4/15 | CodeDeploy（自動デプロイ） |
+| 4/11〜4/15 | CodeDeploy（自動デプロイ）✅ |
 | 4/16〜4/20 | AWS ECS + Next.js + Hono |
 | 4/21〜4/23 | Vercel + Next.js + Hono |
 | 4/24〜4/28 | Cloudflare + Next.js + Hono |
@@ -129,9 +129,9 @@
 - [x] IAM ロール作成（`CodeDeployRole` / `EC2CodeDeployRole`）
 - [x] EC2 インスタンスに `EC2CodeDeployRole` をアタッチ
 - [x] CodeDeploy アプリケーション・デプロイグループ作成
-- [ ] `appspec.yml` と デプロイスクリプト作成
-- [ ] GitHub Actions ワークフロー作成（zip → S3 → CodeDeploy）
-- [ ] push をトリガーに EC2 へ自動デプロイされることを確認
+- [x] `appspec.yml` と デプロイスクリプト作成（`scripts/deploy.sh` / `scripts/before_install.sh`）
+- [x] GitHub Actions ワークフロー作成（zip → S3 → CodeDeploy）
+- [x] push をトリガーに EC2 へ自動デプロイされることを確認
 
 ### ECS + ECR（4/16〜4/20）
 

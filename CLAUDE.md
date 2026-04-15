@@ -29,16 +29,16 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 4: AWS — CodeDeploy 進行中）
+## 現在の状況（Phase 4: AWS — ECS + ECR へ移行）
 
-EC2 への直接デプロイ（4/4〜4/10）完了。現在は CodeDeploy による自動デプロイ（4/11〜4/15）を構築中。
-SAA 取得は一旦スコープ外とし、実践的なデプロイ構成の習得に集中する方針に変更。
+EC2 直接デプロイ（4/4〜4/10）・CodeDeploy 自動デプロイ（4/11〜4/15）完了。
+次は ECS + ECR を使ったコンテナ運用構成（4/16〜4/20）へ移行。
 
 ### 方針
 
-- EC2 + CodeDeploy で push → 自動デプロイの仕組みを構築する
-- その後 ECS / ECR を使ったコンテナ運用構成（4/16〜4/20）へ移行
-- Vercel → Cloudflare → Next.js/React の新機能理解へと進む
+- ECS / ECR の基本構成を理解し、コンテナベースのデプロイを構築する
+- GitHub Actions でビルド → ECR push → ECS 自動デプロイの仕組みを作る
+- その後 Vercel → Cloudflare → Next.js/React の新機能理解へと進む
 
 ### 構成
 
@@ -185,6 +185,25 @@ Amazon Linux（Red Hat系）のパッケージマネージャー。Mac の `brew
 - Blue/Green: 新しいインスタンスを別途用意して切り替え（ダウンタイムなし・コスト高）
 - 学習用途ではインプレースで十分
 
+**CodeDeploy ライフサイクルイベントの順番**
+```
+BeforeInstall  → スクリプト実行（例: ディレクトリ削除・.env 退避）
+Install        → S3 の zip を destination に展開（CodeDeploy が自動実行）
+AfterInstall   → スクリプト実行（例: docker-compose up）
+```
+`runas` でスクリプトの実行ユーザーを指定できる。既存ファイルの削除は `root`、アプリ操作は `ec2-user` が基本。
+
+**CodeDeploy ログの読み方**
+ログファイル: `/var/log/aws/codedeploy-agent/codedeploy-agent.log`
+- ログレベル（INFO/WARN/ERROR）だけでなく `"command_status":"Failed"` や `[stderr]` も探す
+- `[stderr]` の後が実際のエラー内容（例: `docker: 'compose' is not a docker command`）
+
+**stdout vs stderr**
+- `stdout`（標準出力）: 正常な出力
+- `stderr`（標準エラー出力）: エラーメッセージの出力
+- `2>/dev/null`: stderr を捨てる（エラーを無視する）
+- `|| true`: コマンドが失敗しても `set -e` でスクリプトが止まらないようにする
+
 ### 完了済み：IAM セットアップ
 
 ```bash
@@ -236,12 +255,27 @@ aws sts get-caller-identity
 - デプロイグループ `nextjs-deploy-group` 作成済み（インプレース / EC2タグ: Name=nextjs-server / ロードバランサーなし）
 - SSH 接続ショートカット設定済み（`~/.ssh/config` に `Host nextjs-server` 追加）
 
-### 次回やること：appspec.yml とデプロイスクリプト・GitHub Actions の作成
+### 完了済み：CodeDeploy 自動デプロイ（4/11〜4/15）
 
-GitHub に push したら自動で EC2 に反映される仕組みを完成させる。
+- `appspec.yml` 作成済み（`overwrite: yes` / `BeforeInstall` + `AfterInstall` フック）
+- `scripts/before_install.sh` 作成済み（`.env` を退避してディレクトリ削除・復元）
+- `scripts/deploy.sh` 作成済み（`docker-compose down && docker-compose up --build -d`）
+- `.github/workflows/deploy.yml` 作成済み（zip → S3 → CodeDeploy）
+- GitHub Secrets に `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` 登録済み
+- push をトリガーに EC2 へ自動デプロイ確認済み（`http://13.193.222.75:3000` で表示確認）
 
-1. `appspec.yml` をリポジトリルートに作成
-2. デプロイスクリプト（`scripts/deploy.sh` など）を作成
-3. GitHub Actions ワークフロー（`.github/workflows/deploy.yml`）を作成
-   - コードをzip化 → S3にアップロード → CodeDeployにデプロイ指示
-4. push をトリガーに EC2 へ自動デプロイされることを確認
+### 解決済み（CodeDeploy 構築中）
+
+- `The deployment failed because a specified file already exists` → `appspec.yml` に `overwrite: yes` 追加 + `before_install.sh` でディレクトリ削除
+- `docker: 'compose' is not a docker command` → EC2 は docker-compose V1 のため `docker-compose`（ハイフン）に修正
+- `.env not found` → `before_install.sh` で `.env` を `/tmp` に退避してから削除・復元
+- `rm: Permission denied` → `before_install.sh` の `runas` を `root` に変更
+- SSH タイムアウト → 自分のIPが変わったためセキュリティグループを `0.0.0.0/0` に変更（学習用途）
+
+### 次回やること：ECS + ECR
+
+1. ECR リポジトリを作成（AWSコンソール）
+2. IAM ロール作成（ECS タスク用・GitHub Actions 用）
+3. Docker イメージを ECR に push
+4. ECS タスク定義・サービス作成（Fargate）
+5. GitHub Actions でビルド → ECR push → ECS 自動デプロイ
