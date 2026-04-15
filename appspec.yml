@@ -3,6 +3,7 @@ os: linux
 files:
   - source: /
     destination: /home/ec2-user/nextjs-workspace
+    overwrite: yes
 hooks:
   AfterInstall:
     - location: scripts/deploy.sh
