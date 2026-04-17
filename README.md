@@ -72,7 +72,7 @@ pnpm dev:web   # nextjs を起動
 | Phase 3.5 | PostgreSQL 移行 | 完了 |
 | Phase 4 | AWS EC2 直接デプロイ | 完了 |
 | Phase 4 | AWS CodeDeploy 自動デプロイ | 完了 |
-| Phase 4 | AWS ECS + ECR | 未着手 |
+| Phase 4 | AWS ECS + ECR | 進行中 |
 | Phase 5 | Vercel デプロイ | 未着手 |
 | Phase 6 | Cloudflare デプロイ | 未着手 |
 | Phase 7 | Next.js 16.2 の理解 | 未着手 |

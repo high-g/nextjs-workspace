@@ -29,14 +29,14 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 4: AWS — ECS + ECR へ移行）
+## 現在の状況（Phase 4: AWS — ECS + ECR 進行中）
 
 EC2 直接デプロイ（4/4〜4/10）・CodeDeploy 自動デプロイ（4/11〜4/15）完了。
-次は ECS + ECR を使ったコンテナ運用構成（4/16〜4/20）へ移行。
+ECS + ECR（4/16〜4/20）進行中。ECR リポジトリ作成・IAM 設定・Dockerfile マルチステージ化・ECR push まで完了。
 
 ### 方針
 
-- ECS / ECR の基本構成を理解し、コンテナベースのデプロイを構築する
+- ECS タスク定義・サービス作成（Fargate）を構築する
 - GitHub Actions でビルド → ECR push → ECS 自動デプロイの仕組みを作る
 - その後 Vercel → Cloudflare → Next.js/React の新機能理解へと進む
 
@@ -50,14 +50,16 @@ nextjs-workspace/
 │   │   └── seed.ts        # node-postgres に変更済み
 │   ├── drizzle.config.ts  # dialect: "postgresql" に変更済み
 │   ├── src/lib/drizzle.ts # node-postgres に変更済み
-│   └── package.json       # pg / @types/pg 追加済み
+│   ├── Dockerfile         # 本番用（マルチステージ・--prod・tsx で起動）
+│   ├── Dockerfile.dev     # ローカル dev 用（フル deps・pnpm dev）
+│   └── package.json       # tsx を dependencies に移動済み
 ├── nextjs/
 ├── .devcontainer/
 │   ├── hono-api/devcontainer.json
 │   └── nextjs/devcontainer.json
 ├── .env                   # 機密情報（gitignore 済み）
 ├── .env.example           # 項目のみコミット
-├── docker-compose.yml     # postgres サービス追加・env_file 対応
+├── docker-compose.yml     # Dockerfile.dev を参照（ローカル dev 用）
 └── pnpm-lock.yaml
 ```
 
@@ -78,6 +80,11 @@ nextjs-workspace/
 - `docker-compose.yml` の `nextjs` サービスから `target: builder` / `volumes` / `command` を削除（standalone 対応）
 - `hono-api/Dockerfile` に `COPY nextjs/package.json ./nextjs/` 追加 → pnpm がワークスペース全体の依存グラフを正しく解決し `pg` が drizzle-orm にリンクされる
 - Docker anonymous volume のキャッシュ問題 → `docker compose down -v` で解決
+- `hono-api/Dockerfile` が 928MB → マルチステージビルド + `--prod` で 483MB に削減
+- `pnpm dev`（tsx watch）を本番イメージで使っていた → `tsx src/index.ts`（watch なし）に修正
+- `moduleResolution: "bundler"` + `tsc` ビルドは Node.js ESM で `.js` 拡張子が必要なため動かない → tsx を本番でそのまま使う方針に
+- `tsx` が devDependencies だと `--prod` インストール後に使えない → dependencies に移動
+- Dockerfile をローカル dev 用（`Dockerfile.dev`）と本番用（`Dockerfile`）に分離 → docker-compose は `Dockerfile.dev` を参照
 
 ---
 
@@ -167,6 +174,32 @@ Amazon Linux（Red Hat系）のパッケージマネージャー。Mac の `brew
 - ECR: Docker イメージを保存する AWS のレジストリ（Docker Hub の AWS 版）
 - ECS: コンテナを動かすサービス。サーバー管理不要（Fargate モード）
 - 流れ: `GitHub Actions → ECR に push → ECS が自動で pull・起動`
+
+### Docker イメージ最適化
+
+**マルチステージビルド**
+Dockerfile 内で複数の `FROM` を使い、ビルド用と本番用のステージを分ける手法。
+- `AS builder` でビルドステージに名前をつける
+- 本番ステージで `COPY --from=builder` して必要なファイルだけ取り出す
+- ビルドツール（python・make・g++ 等）や devDependencies が本番イメージに含まれなくなる
+
+**`pnpm install --prod`**
+`devDependencies` を除外してインストールするオプション。本番で不要な `drizzle-kit`・`typescript`・`@types/*` 等が入らなくなる。
+`tsx` が devDependencies にあると `--prod` 後に使えないため、本番で必要なツールは `dependencies` に入れる必要がある。
+
+**Dockerfile vs Dockerfile.dev の使い分け**
+- `Dockerfile`: ECS 本番用。`--prod` インストール・`tsx src/index.ts` で起動
+- `Dockerfile.dev`: ローカル dev 用。フル deps・`pnpm dev`（tsx watch）で起動
+- `docker-compose.yml` は `Dockerfile.dev` を参照してローカル開発に使う
+
+**Docker レイヤー**
+Dockerfile の各命令（`FROM` / `RUN` / `COPY` 等）が1つのレイヤーになる。
+`docker push` はレイヤーごとに並行アップロードするため、変更のないレイヤーはスキップされる（キャッシュが効く）。
+
+**ECR レジストリ URI**
+`{アカウントID}.dkr.ecr.{リージョン}.amazonaws.com` の形式。
+Docker Hub の代わりに ECR を使う場合、`docker push` 先にこの URI を指定する。
+`aws ecr get-login-password | docker login` で認証してから push する。
 
 ### S3・CodeDeploy 関連
 
@@ -272,10 +305,29 @@ aws sts get-caller-identity
 - `rm: Permission denied` → `before_install.sh` の `runas` を `root` に変更
 - SSH タイムアウト → 自分のIPが変わったためセキュリティグループを `0.0.0.0/0` に変更（学習用途）
 
-### 次回やること：ECS + ECR
+### 完了済み：ECR セットアップ（4/17〜4/18）
 
-1. ECR リポジトリを作成（AWSコンソール）
-2. IAM ロール作成（ECS タスク用・GitHub Actions 用）
-3. Docker イメージを ECR に push
-4. ECS タスク定義・サービス作成（Fargate）
-5. GitHub Actions でビルド → ECR push → ECS 自動デプロイ
+- ECR レジストリ URI: `513148686116.dkr.ecr.ap-northeast-1.amazonaws.com`
+- ECR リポジトリ作成済み（`hono-api` / `nextjs-app`、ミュータブル・AES-256）
+- IAM ロール `ecsTaskExecutionRole` 作成済み（`AmazonECSTaskExecutionRolePolicy`）
+- `nextjs-user` に `AmazonEC2ContainerRegistryFullAccess` / `AmazonECS_FullAccess` 追加済み
+- `hono-api/Dockerfile` マルチステージビルド化（928MB → 483MB）
+- `hono-api/Dockerfile.dev` 作成・`docker-compose.yml` を Dockerfile.dev に変更済み
+- hono-api / nextjs-app イメージを ECR に push 済み
+
+### 次回やること：ECS タスク定義・サービス作成
+
+1. **ECS クラスター作成**（AWSコンソール → ECS → クラスター → Fargate）
+   - クラスター名: `nextjs-cluster`
+2. **タスク定義作成**（ECS → タスク定義 → 新しいタスク定義）
+   - 起動タイプ: Fargate
+   - CPU: 0.25 vCPU、メモリ: 0.5 GB（最小）
+   - コンテナ: hono-api（イメージ: ECR URI）、nextjs-app（イメージ: ECR URI）
+   - 環境変数: `DATABASE_URL`、`HONO_API_URL` 等
+   - ログ: CloudWatch Logs に出力
+3. **ECS サービス作成**
+   - クラスター内にサービスを作成（タスク数: 1）
+   - ネットワーク: VPC・サブネット・セキュリティグループ設定
+4. **動作確認**
+   - パブリック IP でブラウザからアクセス
+5. **GitHub Actions でビルド → ECR push → ECS 自動デプロイ**

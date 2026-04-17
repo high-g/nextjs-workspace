@@ -135,8 +135,16 @@
 
 ### ECS + ECR（4/16〜4/20）
 
-- [ ] ECS / ECR の基本構成を理解
-- [ ] ECR リポジトリ作成・Docker イメージを push
+- [x] ECS / ECR の基本構成を理解
+- [x] ECR リポジトリ作成・Docker イメージを push
+  - [x] ECR リポジトリ作成（`hono-api` / `nextjs-app`）
+  - [x] IAM ロール作成（`ecsTaskExecutionRole`）・`nextjs-user` に `AmazonEC2ContainerRegistryFullAccess` / `AmazonECS_FullAccess` 追加
+  - [x] `aws ecr get-login-password` で ECR にログイン
+  - [x] `hono-api/Dockerfile` をマルチステージビルドに変更（928MB → 483MB）
+  - [x] `hono-api/Dockerfile.dev` 作成（ローカル dev 用、フル deps）
+  - [x] `docker-compose.yml` を `Dockerfile.dev` に変更
+  - [x] `tsx` を devDependencies → dependencies に移動（`--prod` インストールで実行可能に）
+  - [x] Docker イメージをビルドして ECR に push（hono-api / nextjs-app）
 - [ ] ECS タスク定義・サービス作成（Fargate）
 - [ ] GitHub Actions でビルド → ECR push → ECS 自動デプロイ
 
