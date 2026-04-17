@@ -3,11 +3,10 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "target": "esnext",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
-    "paths": {
-      "@/*": ["./src/*"],
-      "hono-api/*": ["../hono-api/src/*"]
-    }
-  }
+  },
+  "include": ["src"]
 }
