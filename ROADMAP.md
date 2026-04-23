@@ -11,11 +11,13 @@
 | 4/2〜4/4 | DB移行（SQLite → PostgreSQL） |
 | 4/4〜4/10 | AWS EC2 + Next.js + Hono（EC2上でHono、Next.jsを動作させる）✅ |
 | 4/11〜4/15 | CodeDeploy（自動デプロイ）✅ |
-| 4/16〜4/20 | AWS ECS + Next.js + Hono |
-| 4/21〜4/23 | Vercel + Next.js + Hono |
-| 4/24〜4/28 | Cloudflare + Next.js + Hono |
-| 4/29〜5/3 | Next.js 16.2 の理解 |
-| 5/4〜5/8 | React 19 の理解 |
+| 4/16〜4/22 | AWS ECS + Next.js + Hono |
+| 4/23〜4/24 | Next.js 書籍（読書） |
+| 4/25〜4/26 | AWS ECS + Next.js + Hono（続き） |
+| 4/27〜5/1 | Cloudflare デプロイ（Pages / Workers） |
+| 5/2 | Vercel デプロイ |
+| 5/3〜5/6 | Next.js 16.2 の理解 |
+| 5/7〜5/10 | React 19 の理解 |
 
 ## Phase 1: Next.js
 
@@ -133,7 +135,7 @@
 - [x] GitHub Actions ワークフロー作成（zip → S3 → CodeDeploy）
 - [x] push をトリガーに EC2 へ自動デプロイされることを確認
 
-### ECS + ECR（4/16〜4/20）
+### ECS + ECR（4/16〜4/22、4/25〜4/26）
 
 - [x] ECS / ECR の基本構成を理解
 - [x] ECR リポジトリ作成・Docker イメージを push
@@ -150,16 +152,13 @@
 
 ---
 
-## Phase 5: Vercel デプロイ（4/21〜4/23）
+## Phase 5: Next.js 書籍（4/23〜4/24）
 
-- [ ] Next.js を Vercel にデプロイ
-- [ ] Hono API を Vercel Functions としてデプロイ
-- [ ] 環境変数の設定（`HONO_API_URL` など）
-- [ ] プレビューデプロイの活用
+- [ ] 書籍を読む
 
 ---
 
-## Phase 6: Cloudflare デプロイ（4/24〜4/28）
+## Phase 6: Cloudflare デプロイ（4/27〜5/1）
 
 - [ ] Cloudflare Pages に Next.js をデプロイ
 - [ ] Hono API を Cloudflare Workers としてデプロイ
@@ -168,14 +167,23 @@
 
 ---
 
-## Phase 7: Next.js 16.2 の理解（4/29〜5/3）
+## Phase 7: Vercel デプロイ（5/2）
+
+- [ ] Next.js を Vercel にデプロイ
+- [ ] Hono API を Vercel Functions としてデプロイ
+- [ ] 環境変数の設定（`HONO_API_URL` など）
+- [ ] プレビューデプロイの活用
+
+---
+
+## Phase 8: Next.js 16.2 の理解（5/3〜5/6）
 
 - [ ] Next.js 16.2 の新機能を把握
 - [ ] 既存コードへの影響を確認・対応
 
 ---
 
-## Phase 8: React 19 の理解（5/4〜5/8）
+## Phase 9: React 19 の理解（5/7〜5/10）
 
 - [ ] React 19 の新機能を把握（Actions・use フック など）
 - [ ] Next.js App Router との関係を整理

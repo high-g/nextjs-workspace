@@ -73,9 +73,10 @@ pnpm dev:web   # nextjs を起動
 | Phase 4 | AWS EC2 直接デプロイ | 完了 |
 | Phase 4 | AWS CodeDeploy 自動デプロイ | 完了 |
 | Phase 4 | AWS ECS + ECR | 進行中 |
-| Phase 5 | Vercel デプロイ | 未着手 |
-| Phase 6 | Cloudflare デプロイ | 未着手 |
-| Phase 7 | Next.js 16.2 の理解 | 未着手 |
-| Phase 8 | React 19 の理解 | 未着手 |
+| Phase 5 | Next.js 書籍（読書） | 進行中（4/23〜4/24） |
+| Phase 6 | Cloudflare デプロイ（Pages / Workers） | 未着手 |
+| Phase 7 | Vercel デプロイ | 未着手 |
+| Phase 8 | Next.js 16.2 の理解 | 未着手 |
+| Phase 9 | React 19 の理解 | 未着手 |
 
 詳細は [ROADMAP.md](./ROADMAP.md) を参照。

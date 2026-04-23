@@ -29,16 +29,18 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 4: AWS — ECS + ECR 進行中）
+## 現在の状況（Phase 4: AWS — ECS + ECR 進行中、4/23〜4/24 Next.js 書籍読書中）
 
 EC2 直接デプロイ（4/4〜4/10）・CodeDeploy 自動デプロイ（4/11〜4/15）完了。
-ECS + ECR（4/16〜4/20）進行中。ECR リポジトリ作成・IAM 設定・Dockerfile マルチステージ化・ECR push まで完了。
+ECS + ECR（4/16〜4/22）進行中。ECR リポジトリ作成・IAM 設定・Dockerfile マルチステージ化・ECR push まで完了。
+4/23〜4/24 は Next.js 書籍読書。4/25〜4/26 に ECS タスク定義・サービス・GitHub Actions を完了予定。
 
 ### 方針
 
-- ECS タスク定義・サービス作成（Fargate）を構築する
-- GitHub Actions でビルド → ECR push → ECS 自動デプロイの仕組みを作る
-- その後 Vercel → Cloudflare → Next.js/React の新機能理解へと進む
+- 4/25〜4/26: ECS タスク定義・サービス作成（Fargate）+ GitHub Actions 自動デプロイを完成させる
+- 4/27〜5/1: Cloudflare デプロイ（Pages / Workers）
+- 5/2: Vercel デプロイ
+- その後 Next.js 16.2 / React 19 の新機能理解へと進む
 
 ### 構成
 
