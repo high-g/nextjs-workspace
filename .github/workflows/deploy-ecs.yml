@@ -1,0 +1,53 @@
+name: Deploy to ECS
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: ap-northeast-1
+  ECR_REGISTRY: 513148686116.dkr.ecr.ap-northeast-1.amazonaws.com
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credintials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{env.AWS_REGION}}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push hono-api
+        run: |
+          docker build \
+            --platform linux/amd64 \
+            -t $ECR_REGISTRY/hono-api:latest \
+            -f hono-api/Dockerfile \
+            .
+          docker push $ECR_REGISTRY/hono-api:latest
+
+      - name: Build and push nextjs-app
+        run: |
+          docker build \
+            --platform linux/amd64 \
+            -t $ECR_REGISTRY/nextjs-app:latest \
+            -f nextjs/Dockerfile \
+            .
+          docker push $ECR_REGISTRY/nextjs-app:latest
+
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service \
+            --cluster nextjs-cluster \
+            --service nextjs-service \
+            --force-new-deployment \
+            --region ${{env.AWS_REGION}}
