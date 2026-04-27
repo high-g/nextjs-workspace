@@ -21,4 +21,4 @@ COPY hono-api/drizzle ./hono-api/drizzle
 
 WORKDIR /app/hono-api
 EXPOSE 3001
-CMD ["../node_modules/.bin/tsx", "src/index.ts"]
+CMD ["node_modules/.bin/tsx", "src/index.ts"]
