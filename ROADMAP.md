@@ -11,10 +11,8 @@
 | 4/2〜4/4 | DB移行（SQLite → PostgreSQL） |
 | 4/4〜4/10 | AWS EC2 + Next.js + Hono（EC2上でHono、Next.jsを動作させる）✅ |
 | 4/11〜4/15 | CodeDeploy（自動デプロイ）✅ |
-| 4/16〜4/22 | AWS ECS + Next.js + Hono |
-| 4/23〜4/24 | Next.js 書籍（読書） |
-| 4/25〜4/26 | AWS ECS + Next.js + Hono（続き） |
-| 4/27〜5/1 | Cloudflare デプロイ（Pages / Workers） |
+| 4/16〜4/28 | AWS ECS + Next.js + Hono ✅ |
+| 4/29〜5/1 | Cloudflare デプロイ（Pages / Workers） |
 | 5/2 | Vercel デプロイ |
 | 5/3〜5/6 | Next.js 16.2 の理解 |
 | 5/7〜5/10 | React 19 の理解 |
@@ -135,7 +133,7 @@
 - [x] GitHub Actions ワークフロー作成（zip → S3 → CodeDeploy）
 - [x] push をトリガーに EC2 へ自動デプロイされることを確認
 
-### ECS + ECR（4/16〜4/22、4/25〜4/26）
+### ECS + ECR（4/16〜4/28 完了）✅
 
 - [x] ECS / ECR の基本構成を理解
 - [x] ECR リポジトリ作成・Docker イメージを push
@@ -160,13 +158,13 @@
 
 ---
 
-## Phase 5: Next.js 書籍（4/23〜4/24）
+## Phase 5: Next.js 書籍（4/23〜4/24）✅
 
-- [ ] 書籍を読む
+- [x] 書籍を読む
 
 ---
 
-## Phase 6: Cloudflare デプロイ（4/27〜5/1）
+## Phase 6: Cloudflare デプロイ（4/29〜5/1）
 
 - [ ] Cloudflare Pages に Next.js をデプロイ
 - [ ] Hono API を Cloudflare Workers としてデプロイ
