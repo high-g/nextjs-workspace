@@ -29,15 +29,13 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 4: AWS — ECS + ECR 進行中、4/23〜4/24 Next.js 書籍読書中）
+## 現在の状況（Phase 4: AWS — ECS + ECR 完了、4/28〜 Cloudflare デプロイへ）
 
-EC2 直接デプロイ（4/4〜4/10）・CodeDeploy 自動デプロイ（4/11〜4/15）完了。
-ECS + ECR（4/16〜4/22）進行中。ECR リポジトリ作成・IAM 設定・Dockerfile マルチステージ化・ECR push まで完了。
-4/23〜4/24 は Next.js 書籍読書。4/25〜4/26 に ECS タスク定義・サービス・GitHub Actions を完了予定。
+EC2 直接デプロイ（4/4〜4/10）・CodeDeploy 自動デプロイ（4/11〜4/15）・ECS + ECR（4/16〜4/28）すべて完了。
+GitHub Actions で push → ECR push → ECS 自動デプロイの仕組みが動作確認済み。
 
 ### 方針
 
-- 4/25〜4/26: ECS タスク定義・サービス作成（Fargate）+ GitHub Actions 自動デプロイを完成させる
 - 4/27〜5/1: Cloudflare デプロイ（Pages / Workers）
 - 5/2: Vercel デプロイ
 - その後 Next.js 16.2 / React 19 の新機能理解へと進む
@@ -317,7 +315,27 @@ aws sts get-caller-identity
 - `hono-api/Dockerfile.dev` 作成・`docker-compose.yml` を Dockerfile.dev に変更済み
 - hono-api / nextjs-app イメージを ECR に push 済み
 
-### 次回やること：ECS タスク定義・サービス作成
+### 完了済み：ECS + ECR デプロイ（4/16〜4/28）
+
+- ECS クラスター `nextjs-cluster` 作成済み（Fargate）
+- タスク定義 `nextjs-task` 作成済み（CPU 0.25vCPU・メモリ 0.5GB）
+- セキュリティグループ `nextjs-sg`（ポート 3000/3001/5432 開放済み）
+- ECS サービス `nextjs-service` 作成済み（Circuit Breaker オフ）
+- DB 接続先: EC2 `nextjs-server` の PostgreSQL（`172.31.45.172:5432`）
+- `.github/workflows/deploy-ecs.yml` 作成済み（`--platform linux/amd64`）
+- push → GitHub Actions → ECR push → ECS 自動デプロイ確認済み
+
+### 解決済み（ECS 構築中）
+
+- `exec format error` → Apple Silicon でビルドしたイメージが arm64 になっていた → `--platform linux/amd64` で解決（GitHub Actions の runner は native amd64 なので自動解決）
+- `Cannot find module '/app/node_modules/.bin/tsx'` → pnpm ワークスペースでは tsx の binary は `hono-api/node_modules/.bin/` に置かれる → CMD を `["../node_modules/.bin/tsx", ...]` から `["node_modules/.bin/tsx", ...]` に変更
+- タスク定義のイメージが SHA256 ダイジェストに固定されていた → `:latest` タグに変更
+- `ENOTFOUND postgres` → ECS に PostgreSQL コンテナがいない → EC2 の docker-compose で PostgreSQL を起動し EC2 プライベート IP を DATABASE_URL に設定
+- EC2 ディスク満杯 → `docker system prune -a` で不要イメージを削除
+- `relation "posts" does not exist` → 新規 DB なのでマイグレーション未実行 → EC2 で `docker-compose run --rm hono-api sh -c "pnpm exec drizzle-kit migrate && pnpm seed:drizzle"` を実行
+- Turbopack が QEMU エミュレーション下でクラッシュ → GitHub Actions（native amd64）でビルドすることで解決
+
+### 次回やること：Cloudflare デプロイ
 
 1. **ECS クラスター作成**（AWSコンソール → ECS → クラスター → Fargate）
    - クラスター名: `nextjs-cluster`

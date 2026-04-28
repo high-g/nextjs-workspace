@@ -147,8 +147,16 @@
   - [x] `docker-compose.yml` を `Dockerfile.dev` に変更
   - [x] `tsx` を devDependencies → dependencies に移動（`--prod` インストールで実行可能に）
   - [x] Docker イメージをビルドして ECR に push（hono-api / nextjs-app）
-- [ ] ECS タスク定義・サービス作成（Fargate）
-- [ ] GitHub Actions でビルド → ECR push → ECS 自動デプロイ
+- [x] ECS タスク定義・サービス作成（Fargate）
+  - [x] ECS クラスター作成（`nextjs-cluster`）
+  - [x] タスク定義作成（`nextjs-task`、CPU 0.25vCPU・メモリ 0.5GB）
+  - [x] セキュリティグループ設定（`nextjs-sg`、ポート 3000/3001 開放）
+  - [x] ECS サービス作成（`nextjs-service`、Fargate、Circuit Breaker オフ）
+  - [x] DB 接続先を EC2 の PostgreSQL（`172.31.45.172:5432`）に設定
+  - [x] ブラウザからアクセス確認（`http://<パブリックIP>:3000`）
+- [x] GitHub Actions でビルド → ECR push → ECS 自動デプロイ
+  - [x] `.github/workflows/deploy-ecs.yml` 作成（`--platform linux/amd64` でビルド）
+  - [x] push をトリガーに ECR push → ECS デプロイが自動実行されることを確認
 
 ---
 
