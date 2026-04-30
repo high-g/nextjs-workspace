@@ -189,7 +189,6 @@
 - [ ] Hono API を Cloudflare Workers としてデプロイ
 - [ ] Cloudflare D1（SQLite 互換 DB）との連携
 - [ ] Cloudflare Pages に Next.js をデプロイ
-- [ ] Vercel / AWS との比較 — コスト・レイテンシ・DX
 
 ---
 

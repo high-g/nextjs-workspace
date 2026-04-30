@@ -20,8 +20,6 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 - ORM: Prisma, Drizzle
 - Docker
 - AWS
-- （Vercel）
-- （Cloudflare）
 
 ### 進め方
 
