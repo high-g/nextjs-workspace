@@ -1,23 +1,39 @@
-# 学習ロードマップ: Next.js 16 + Hono + Docker + AWS
+# 学習ロードマップ
+
+## リポジトリ構成
+
+| リポジトリ | 用途 |
+|---|---|
+| `nextjs-workspace` | Docker + AWS（EC2 / CodeDeploy / ECS） |
+| `cloudflare-workspace` | Cloudflare（Workers / D1 / Pages） |
+| `lambda-workspace` | AWS Lambda + API Gateway |
 
 ## スケジュール
 
-| 期間 | 内容 |
-|---|---|
-| 3/15〜 | Next.js 16（SSR・RSC・Server Actions・Vercel Deploy・Route Handler・Middleware） |
-| 3/23〜 | Hono（基本ルーティング・GET/POST・Hono RPC・Zod連携） |
-| 3/30〜 | Prisma / Drizzle（サーバーサイドTSで利用するORMを理解） |
-| 4/1〜 | Docker（Dockerfile・docker build/run・docker compose・DevContainer） |
-| 4/2〜4/4 | DB移行（SQLite → PostgreSQL） |
-| 4/4〜4/10 | AWS EC2 + Next.js + Hono（EC2上でHono、Next.jsを動作させる）✅ |
-| 4/11〜4/15 | CodeDeploy（自動デプロイ）✅ |
-| 4/16〜4/28 | AWS ECS + Next.js + Hono ✅ |
-| 4/29〜5/1 | Cloudflare デプロイ（Pages / Workers） |
-| 5/2 | Vercel デプロイ |
-| 5/3〜5/6 | Next.js 16.2 の理解 |
-| 5/7〜5/10 | React 19 の理解 |
+| 期間 | 内容 | 状態 |
+|---|---|---|
+| 3/15〜 | Next.js 16（SSR・RSC・Server Actions・Vercel Deploy・Route Handler・Middleware） | ✅ |
+| 3/23〜 | Hono（基本ルーティング・GET/POST・Hono RPC・Zod連携） | ✅ |
+| 3/30〜 | Prisma / Drizzle（サーバーサイドTSで利用するORMを理解） | ✅ |
+| 4/1〜 | Docker（Dockerfile・docker build/run・docker compose・DevContainer） | ✅ |
+| 4/2〜4/4 | DB移行（SQLite → PostgreSQL） | ✅ |
+| 4/4〜4/10 | AWS EC2 直接デプロイ | ✅ |
+| 4/11〜4/15 | CodeDeploy 自動デプロイ | ✅ |
+| 4/16〜4/28 | AWS ECS + ECR | ✅ |
+| 4/23 | Next.js 書籍 | ✅ |
+| 4/29〜5/3 | Cloudflare デプロイ（Workers / D1 / Pages） | |
+| 5/4〜5/7 | AWS Lambda + API Gateway | |
+| 5/8 | Vercel デプロイ | |
+| 5/9〜5/11 | Next.js 16.2 の理解 | |
+| 5/12〜5/14 | React 19 の理解 | |
+| 5/15〜5/17 | Vite + | |
+| 5/18〜5/21 | TanStack Start | |
+| 5/22〜5/26 | neverthrow（Hono との組み合わせ） | |
+| 5/27〜5/31 | Effect（Hono との組み合わせ） | |
 
-## Phase 1: Next.js
+---
+
+## Phase 1: Next.js ✅
 
 - [x] Next.js 16 環境構築 (pnpm + Vercel デプロイ)
 - [x] RSC (React Server Components)
@@ -30,7 +46,7 @@
 
 ---
 
-## Phase 2: Hono
+## Phase 2: Hono ✅
 
 - [x] Hono の基本 — ルーティング、ハンドラー
 - [x] Next.js の Route Handlers と比較
@@ -40,7 +56,7 @@
 
 ---
 
-## Phase 2.5: DB 連携 (Prisma)
+## Phase 2.5: DB 連携 (Prisma) ✅
 
 - [x] Prisma セットアップ — スキーマ定義・マイグレーション (User / Post、better-sqlite3)
 - [x] GET /posts — `prisma.post.findMany()` で DB から取得
@@ -52,7 +68,7 @@
 
 ---
 
-## Phase 2.6: DB 連携 (Drizzle)
+## Phase 2.6: DB 連携 (Drizzle) ✅
 
 - [x] Drizzle セットアップ — スキーマ定義・マイグレーション
 - [x] Hono + Drizzle で CRUD 実装
@@ -62,7 +78,7 @@
 
 ---
 
-## Phase 3: Docker
+## Phase 3: Docker ✅
 
 - [x] Docker の基本概念を理解
 - [x] Dockerfile の書き方
@@ -93,7 +109,7 @@
 
 ---
 
-## Phase 3.5: PostgreSQL 移行
+## Phase 3.5: PostgreSQL 移行 ✅
 
 - [x] PostgreSQL の基本概念を理解（SQLite / MySQL との違い）
 - [x] Docker Compose に PostgreSQL コンテナを追加（postgres:17-alpine）
@@ -110,9 +126,11 @@
 
 ---
 
-## Phase 4: AWS（4/4〜4/20）
+## Phase 4: AWS ✅
 
-### EC2 直接デプロイ（4/4〜4/10 完了）
+> リポジトリ: `nextjs-workspace`
+
+### EC2 直接デプロイ（4/4〜4/10）
 
 - [x] IAM ユーザー作成・アクセスキー発行・AWS CLI セットアップ
 - [x] IAM の基本概念を理解 — ユーザー・ロール・ポリシー・インスタンスプロファイル
@@ -133,7 +151,7 @@
 - [x] GitHub Actions ワークフロー作成（zip → S3 → CodeDeploy）
 - [x] push をトリガーに EC2 へ自動デプロイされることを確認
 
-### ECS + ECR（4/16〜4/28 完了）✅
+### ECS + ECR（4/16〜4/28）
 
 - [x] ECS / ECR の基本構成を理解
 - [x] ECR リポジトリ作成・Docker イメージを push
@@ -158,22 +176,35 @@
 
 ---
 
-## Phase 5: Next.js 書籍（4/23〜4/24）✅
+## Phase 5: Next.js 書籍（4/23） ✅
 
 - [x] 書籍を読む
 
 ---
 
-## Phase 6: Cloudflare デプロイ（4/29〜5/1）
+## Phase 6: Cloudflare デプロイ（4/29〜5/3）
 
-- [ ] Cloudflare Pages に Next.js をデプロイ
+> リポジトリ: `cloudflare-workspace`（新規作成）
+
 - [ ] Hono API を Cloudflare Workers としてデプロイ
 - [ ] Cloudflare D1（SQLite 互換 DB）との連携
+- [ ] Cloudflare Pages に Next.js をデプロイ
 - [ ] Vercel / AWS との比較 — コスト・レイテンシ・DX
 
 ---
 
-## Phase 7: Vercel デプロイ（5/2）
+## Phase 7: AWS Lambda + API Gateway（5/4〜5/7）
+
+> リポジトリ: `lambda-workspace`（新規作成）
+
+- [ ] Lambda の基本概念を理解
+- [ ] Hono を Lambda ハンドラーとして動作させる
+- [ ] API Gateway と連携してエンドポイントを公開
+- [ ] ECS との比較 — コスト・コールドスタート・ユースケース
+
+---
+
+## Phase 8: Vercel デプロイ（5/8）
 
 - [ ] Next.js を Vercel にデプロイ
 - [ ] Hono API を Vercel Functions としてデプロイ
@@ -182,17 +213,45 @@
 
 ---
 
-## Phase 8: Next.js 16.2 の理解（5/3〜5/6）
+## Phase 9: Next.js 16.2 の理解（5/9〜5/11）
 
 - [ ] Next.js 16.2 の新機能を把握
 - [ ] 既存コードへの影響を確認・対応
 
 ---
 
-## Phase 9: React 19 の理解（5/7〜5/10）
+## Phase 10: React 19 の理解（5/12〜5/14）
 
 - [ ] React 19 の新機能を把握（Actions・use フック など）
 - [ ] Next.js App Router との関係を整理
+
+---
+
+## Phase 11: Vite +（5/15〜5/17）
+
+- [ ] Vite の基本概念を理解
+- [ ] Next.js との違い・使い分けを整理
+
+---
+
+## Phase 12: TanStack Start（5/18〜5/21）
+
+- [ ] TanStack Start の基本概念を理解
+- [ ] Next.js App Router との比較
+
+---
+
+## Phase 13: neverthrow（5/22〜5/26）
+
+- [ ] neverthrow の基本（`Result` 型・`ok` / `err`）
+- [ ] Hono のルートハンドラーで neverthrow を使ったエラーハンドリング
+
+---
+
+## Phase 14: Effect（5/27〜5/31）
+
+- [ ] Effect の基本概念を理解
+- [ ] Hono との組み合わせで実用的なパターンを試す
 
 ---
 
@@ -201,3 +260,4 @@
 - [Next.js ドキュメント](https://nextjs.org/docs)
 - [Hono ドキュメント](https://hono.dev)
 - [AWS ECS ドキュメント](https://docs.aws.amazon.com/ecs)
+- [Cloudflare Workers ドキュメント](https://developers.cloudflare.com/workers/)

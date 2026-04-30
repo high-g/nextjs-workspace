@@ -2,6 +2,8 @@
 
 Next.js + Hono + ORM + Docker + AWS の基礎を学ぶための学習用モノレポ。
 
+> 関連リポジトリ: [cloudflare-workspace](../cloudflare-workspace) / [lambda-workspace](../lambda-workspace)
+
 ## スタック
 
 - **Next.js 16** (App Router)
@@ -10,7 +12,6 @@ Next.js + Hono + ORM + Docker + AWS の基礎を学ぶための学習用モノ�
 - **DB**: PostgreSQL
 - **Docker** / Docker Compose / DevContainer
 - **AWS** EC2 / CodeDeploy / ECS / ECR
-- **Vercel** / **Cloudflare** — 予定
 
 ## 構成
 
@@ -62,21 +63,24 @@ pnpm dev:web   # nextjs を起動
 
 ## 進捗
 
-| Phase | 内容 | 状態 |
-|-------|------|------|
-| Phase 1 | Next.js 基礎 | 完了 |
-| Phase 2 | Hono 基礎・Next.js 連携 | 完了 |
-| Phase 2.5 | Prisma CRUD | 完了 |
-| Phase 2.6 | Drizzle CRUD | 完了 |
-| Phase 3 | Docker / DevContainer | 完了 |
-| Phase 3.5 | PostgreSQL 移行 | 完了 |
-| Phase 4 | AWS EC2 直接デプロイ | 完了 |
-| Phase 4 | AWS CodeDeploy 自動デプロイ | 完了 |
-| Phase 4 | AWS ECS + ECR | 完了 |
-| Phase 5 | Next.js 書籍（読書） | 完了 |
-| Phase 6 | Cloudflare デプロイ（Pages / Workers） | 未着手 |
-| Phase 7 | Vercel デプロイ | 未着手 |
-| Phase 8 | Next.js 16.2 の理解 | 未着手 |
-| Phase 9 | React 19 の理解 | 未着手 |
+| Phase | 内容 | 状態 | リポジトリ |
+|-------|------|------|------------|
+| Phase 1 | Next.js 基礎 | 完了 | nextjs-workspace |
+| Phase 2 | Hono 基礎・Next.js 連携 | 完了 | nextjs-workspace |
+| Phase 2.5 | Prisma CRUD | 完了 | nextjs-workspace |
+| Phase 2.6 | Drizzle CRUD | 完了 | nextjs-workspace |
+| Phase 3 | Docker / DevContainer | 完了 | nextjs-workspace |
+| Phase 3.5 | PostgreSQL 移行 | 完了 | nextjs-workspace |
+| Phase 4 | AWS EC2 / CodeDeploy / ECS + ECR | 完了 | nextjs-workspace |
+| Phase 5 | Next.js 書籍（読書） | 完了 | — |
+| Phase 6 | Cloudflare Workers / D1 / Pages | 進行中 | cloudflare-workspace |
+| Phase 7 | AWS Lambda + API Gateway | 未着手 | lambda-workspace |
+| Phase 8 | Vercel デプロイ | 未着手 | nextjs-workspace |
+| Phase 9 | Next.js 16.2 の理解 | 未着手 | nextjs-workspace |
+| Phase 10 | React 19 の理解 | 未着手 | nextjs-workspace |
+| Phase 11 | Vite + | 未着手 | — |
+| Phase 12 | TanStack Start | 未着手 | — |
+| Phase 13 | neverthrow | 未着手 | — |
+| Phase 14 | Effect | 未着手 | — |
 
 詳細は [ROADMAP.md](./ROADMAP.md) を参照。

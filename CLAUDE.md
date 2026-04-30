@@ -29,16 +29,25 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 4: AWS — ECS + ECR 完了、4/28〜 Cloudflare デプロイへ）
+## 現在の状況（Phase 6: Cloudflare デプロイ 進行中 — 4/29〜5/3）
 
-EC2 直接デプロイ（4/4〜4/10）・CodeDeploy 自動デプロイ（4/11〜4/15）・ECS + ECR（4/16〜4/28）すべて完了。
-GitHub Actions で push → ECR push → ECS 自動デプロイの仕組みが動作確認済み。
+Phase 4 AWS（EC2 / CodeDeploy / ECS + ECR）および Phase 5（Next.js 書籍）すべて完了。
+4/29 より Cloudflare フェーズに着手。リポジトリを分割する方針に決定。
+
+### リポジトリ構成
+
+- `nextjs-workspace`: Docker + AWS（本リポジトリ）
+- `cloudflare-workspace`: Cloudflare Workers / D1 / Pages（新規作成）
+- `lambda-workspace`: AWS Lambda + API Gateway（新規作成）
 
 ### 方針
 
-- 4/27〜5/1: Cloudflare デプロイ（Pages / Workers）
-- 5/2: Vercel デプロイ
-- その後 Next.js 16.2 / React 19 の新機能理解へと進む
+- 4/29〜5/3: Cloudflare デプロイ（Workers → D1 → Pages の順）
+- 5/4〜5/7: AWS Lambda + API Gateway
+- 5/8: Vercel デプロイ
+- 5/9〜5/11: Next.js 16.2 の理解
+- 5/12〜5/14: React 19 の理解
+- 5/15〜: Vite+ / TanStack Start / neverthrow / Effect
 
 ### 構成
 
@@ -89,6 +98,31 @@ nextjs-workspace/
 ---
 
 ## 補足・用語解説
+
+### Cloudflare
+
+**Cloudflare Workers**
+サーバーレスで動く JavaScript/TypeScript の実行環境。Node.js ではなく V8 アイソレートベースなので、Node.js の API（`fs` / `net` / TCP など）は使えない。`pg`（TCP 接続）が動かないため DB は D1 や Neon（HTTP ベース）を使う。Hono は最初から Workers に対応しており、`export default app` でそのままデプロイできる。
+
+**Cloudflare D1**
+Cloudflare が提供する SQLite 互換のサーバーレス DB。Workers から `env.DB`（バインディング）経由でアクセスする。Drizzle が D1 をサポート（`drizzle-orm/d1`）。`wrangler d1 create <name>` で作成、`wrangler d1 migrations apply` でマイグレーション実行。PostgreSQL と違い SQLite ベースなので `pg-core` → `sqlite-core` へのスキーマ変更が必要。
+
+**Wrangler**
+Cloudflare の CLI ツール。`wrangler login` でブラウザ認証、`wrangler dev` でローカル開発、`wrangler deploy` でデプロイ。`wrangler.toml` がプロジェクト設定ファイル（AWS でいう `serverless.yml` に相当）。
+
+**バインディング（Bindings）**
+Workers が外部リソース（D1 / KV / R2 など）にアクセスするための仕組み。`wrangler.toml` で定義し、ハンドラーの第2引数 `env` 経由でアクセスする。Hono では `c.env.DB` のように型付きで使える。
+
+**Workers のエントリーポイント**
+Node.js の `http.createServer` に相当するものが Workers では `fetch` ハンドラー。Hono は `app.fetch` を持つため `export default app` でそのままエントリーポイントになる。
+
+**Cloudflare Pages**
+静的サイトおよび SSR アプリのホスティングサービス。Next.js は `@cloudflare/next-on-pages` を使ってデプロイする。Edge Runtime 制約（Node.js API 不可）があるため、既存の Next.js コードが動かない箇所が出ることがある。
+
+**なぜ Workers と ECS でコードが異なるのか**
+ECS（Fargate）は通常の Node.js プロセスを Docker コンテナで動かす。Workers は V8 アイソレートという全く別の実行環境。Node.js の API が使えない制約がある代わりに、コールドスタートがほぼゼロ・グローバルエッジ配信・無料枠が広いというメリットがある。
+
+
 
 ### AWS 全般
 
@@ -335,19 +369,58 @@ aws sts get-caller-identity
 - `relation "posts" does not exist` → 新規 DB なのでマイグレーション未実行 → EC2 で `docker-compose run --rm hono-api sh -c "pnpm exec drizzle-kit migrate && pnpm seed:drizzle"` を実行
 - Turbopack が QEMU エミュレーション下でクラッシュ → GitHub Actions（native amd64）でビルドすることで解決
 
-### 次回やること：Cloudflare デプロイ
+### 次回やること：Cloudflare Workers デプロイ（`cloudflare-workspace` で作業）
 
-1. **ECS クラスター作成**（AWSコンソール → ECS → クラスター → Fargate）
-   - クラスター名: `nextjs-cluster`
-2. **タスク定義作成**（ECS → タスク定義 → 新しいタスク定義）
-   - 起動タイプ: Fargate
-   - CPU: 0.25 vCPU、メモリ: 0.5 GB（最小）
-   - コンテナ: hono-api（イメージ: ECR URI）、nextjs-app（イメージ: ECR URI）
-   - 環境変数: `DATABASE_URL`、`HONO_API_URL` 等
-   - ログ: CloudWatch Logs に出力
-3. **ECS サービス作成**
-   - クラスター内にサービスを作成（タスク数: 1）
-   - ネットワーク: VPC・サブネット・セキュリティグループ設定
-4. **動作確認**
-   - パブリック IP でブラウザからアクセス
-5. **GitHub Actions でビルド → ECR push → ECS 自動デプロイ**
+1. **リポジトリ作成**
+   ```bash
+   mkdir cloudflare-workspace && cd cloudflare-workspace
+   git init
+   ```
+
+2. **pnpm ワークスペース初期化**
+   ```bash
+   pnpm init
+   # hono-api/ ディレクトリを作成して nextjs-workspace/hono-api から必要なファイルをコピー
+   ```
+
+3. **Wrangler インストール & ログイン**
+   ```bash
+   pnpm add -D wrangler
+   pnpm wrangler login
+   ```
+
+4. **`wrangler.toml` 作成**（Workers の設定ファイル）
+   ```toml
+   name = "hono-api"
+   main = "src/index.ts"
+   compatibility_date = "2024-01-01"
+   ```
+
+5. **`src/index.ts` を Workers 用に変更**
+   - `@hono/node-server` の `serve()` を削除
+   - `export default app` に変更（Workers は fetch ハンドラーをエクスポートする形式）
+
+6. **D1 データベース作成**
+   ```bash
+   pnpm wrangler d1 create hono-db
+   # 出力された database_id を wrangler.toml に追記
+   ```
+
+7. **`drizzle/schema.ts` を sqlite-core に変更**（D1 は SQLite ベース）
+
+8. **`src/lib/drizzle.ts` を D1 バインディング用に変更**
+   ```ts
+   import { drizzle } from "drizzle-orm/d1";
+   export const createDb = (d1: D1Database) => drizzle(d1, { schema });
+   ```
+
+9. **マイグレーション実行**
+   ```bash
+   pnpm wrangler d1 migrations apply hono-db --local   # ローカル確認
+   pnpm wrangler d1 migrations apply hono-db           # 本番 D1 に適用
+   ```
+
+10. **デプロイ**
+    ```bash
+    pnpm wrangler deploy
+    ```
