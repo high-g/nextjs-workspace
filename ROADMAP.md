@@ -21,12 +21,12 @@
 | 4/11〜4/15 | CodeDeploy 自動デプロイ | ✅ |
 | 4/16〜4/28 | AWS ECS + ECR | ✅ |
 | 4/23 | Next.js 書籍 | ✅ |
-| 4/29〜5/3 | Cloudflare デプロイ（Workers / D1 / Pages） | |
-| 5/4〜5/7 | AWS Lambda + API Gateway | |
-| 5/8 | Vercel デプロイ | |
-| 5/9〜5/11 | Next.js 16.2 の理解 | |
-| 5/12〜5/14 | React 19 の理解 | |
-| 5/15〜5/17 | Vite + | |
+| 4/29〜5/5 | Cloudflare デプロイ（Workers / D1 / Pages） | |
+| 5/6〜5/8 | AWS Lambda + API Gateway | |
+| 5/9 | Vercel デプロイ | |
+| 5/10〜5/12 | Next.js 16.2 の理解 | |
+| 5/13〜5/15 | React 19 の理解 | |
+| 5/16〜5/17 | Vite + | |
 | 5/18〜5/21 | TanStack Start | |
 | 5/22〜5/26 | neverthrow（Hono との組み合わせ） | |
 | 5/27〜5/31 | Effect（Hono との組み合わせ） | |
@@ -182,17 +182,17 @@
 
 ---
 
-## Phase 6: Cloudflare デプロイ（4/29〜5/3）
+## Phase 6: Cloudflare デプロイ（4/29〜5/5）
 
 > リポジトリ: `cloudflare-workspace`（新規作成）
 
-- [ ] Hono API を Cloudflare Workers としてデプロイ
+- [x] Hono API を Cloudflare Workers としてデプロイ
 - [ ] Cloudflare D1（SQLite 互換 DB）との連携
 - [ ] Cloudflare Pages に Next.js をデプロイ
 
 ---
 
-## Phase 7: AWS Lambda + API Gateway（5/4〜5/7）
+## Phase 7: AWS Lambda + API Gateway（5/6〜5/8）
 
 > リポジトリ: `lambda-workspace`（新規作成）
 
@@ -203,7 +203,7 @@
 
 ---
 
-## Phase 8: Vercel デプロイ（5/8）
+## Phase 8: Vercel デプロイ（5/9）
 
 - [ ] Next.js を Vercel にデプロイ
 - [ ] Hono API を Vercel Functions としてデプロイ
@@ -212,21 +212,21 @@
 
 ---
 
-## Phase 9: Next.js 16.2 の理解（5/9〜5/11）
+## Phase 9: Next.js 16.2 の理解（5/10〜5/12）
 
 - [ ] Next.js 16.2 の新機能を把握
 - [ ] 既存コードへの影響を確認・対応
 
 ---
 
-## Phase 10: React 19 の理解（5/12〜5/14）
+## Phase 10: React 19 の理解（5/13〜5/15）
 
 - [ ] React 19 の新機能を把握（Actions・use フック など）
 - [ ] Next.js App Router との関係を整理
 
 ---
 
-## Phase 11: Vite +（5/15〜5/17）
+## Phase 11: Vite +（5/16〜5/17）
 
 - [ ] Vite の基本概念を理解
 - [ ] Next.js との違い・使い分けを整理

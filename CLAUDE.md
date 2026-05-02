@@ -40,12 +40,13 @@ Phase 4 AWS（EC2 / CodeDeploy / ECS + ECR）および Phase 5（Next.js 書籍�
 
 ### 方針
 
-- 4/29〜5/3: Cloudflare デプロイ（Workers → D1 → Pages の順）
-- 5/4〜5/7: AWS Lambda + API Gateway
-- 5/8: Vercel デプロイ
-- 5/9〜5/11: Next.js 16.2 の理解
-- 5/12〜5/14: React 19 の理解
-- 5/15〜: Vite+ / TanStack Start / neverthrow / Effect
+- 4/29〜5/5: Cloudflare デプロイ（Workers → D1 → Pages の順）
+- 5/6〜5/8: AWS Lambda + API Gateway
+- 5/9: Vercel デプロイ
+- 5/10〜5/12: Next.js 16.2 の理解
+- 5/13〜5/15: React 19 の理解
+- 5/16〜5/17: Vite+
+- 5/18〜: TanStack Start / neverthrow / Effect
 
 ### 構成
 
