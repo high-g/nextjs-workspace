@@ -188,7 +188,11 @@
 
 - [x] Hono API を Cloudflare Workers としてデプロイ
 - [x] Cloudflare D1（SQLite 互換 DB）との連携
-- [ ] Cloudflare Pages に Next.js をデプロイ
+- [x] Next.js を Cloudflare Workers にデプロイ（OpenNext 経由）
+- [ ] App Router 実装（Route Handlers / Server Components / Server Actions）
+  - [ ] Route Handlers — `app/api/posts/route.ts` で hono-api に繋ぐ
+  - [ ] Server Components — posts 一覧をサーバー側で取得・描画
+  - [ ] Server Actions — 投稿フォームからPOST処理
 
 ---
 
