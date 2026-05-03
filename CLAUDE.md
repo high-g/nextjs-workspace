@@ -27,10 +27,9 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 6: Cloudflare デプロイ 進行中 — 4/29〜5/3）
+## 現在の状況（Phase 6: Cloudflare デプロイ 進行中 — 5/3）
 
-Phase 4 AWS（EC2 / CodeDeploy / ECS + ECR）および Phase 5（Next.js 書籍）すべて完了。
-4/29 より Cloudflare フェーズに着手。リポジトリを分割する方針に決定。
+Workers デプロイ・D1 連携まで完了。残りは Cloudflare Pages への Next.js デプロイ。
 
 ### リポジトリ構成
 
@@ -368,58 +367,52 @@ aws sts get-caller-identity
 - `relation "posts" does not exist` → 新規 DB なのでマイグレーション未実行 → EC2 で `docker-compose run --rm hono-api sh -c "pnpm exec drizzle-kit migrate && pnpm seed:drizzle"` を実行
 - Turbopack が QEMU エミュレーション下でクラッシュ → GitHub Actions（native amd64）でビルドすることで解決
 
-### 次回やること：Cloudflare Workers デプロイ（`cloudflare-workspace` で作業）
+### 完了済み：Cloudflare Workers + D1 デプロイ（cloudflare-workspace）
 
-1. **リポジトリ作成**
+- Hono API を Workers としてデプロイ済み（`export default app` 形式に変更）
+- D1 データベース作成済み（`wrangler d1 create`）
+- Drizzle スキーマを `pg-core` → `sqlite-core` に変更済み
+- `src/lib/drizzle.ts` を D1 バインディング用（`drizzle-orm/d1`）に変更済み
+- マイグレーション・シード実行済み
+- `pnpm wrangler deploy` でデプロイ・疎通確認済み
+
+### 次回やること：Cloudflare Pages デプロイ（`cloudflare-workspace` で作業）
+
+1. **`@cloudflare/next-on-pages` インストール**
    ```bash
-   mkdir cloudflare-workspace && cd cloudflare-workspace
-   git init
+   pnpm add -D @cloudflare/next-on-pages vercel
    ```
 
-2. **pnpm ワークスペース初期化**
-   ```bash
-   pnpm init
-   # hono-api/ ディレクトリを作成して nextjs-workspace/hono-api から必要なファイルをコピー
-   ```
-
-3. **Wrangler インストール & ログイン**
-   ```bash
-   pnpm add -D wrangler
-   pnpm wrangler login
-   ```
-
-4. **`wrangler.toml` 作成**（Workers の設定ファイル）
-   ```toml
-   name = "hono-api"
-   main = "src/index.ts"
-   compatibility_date = "2024-01-01"
-   ```
-
-5. **`src/index.ts` を Workers 用に変更**
-   - `@hono/node-server` の `serve()` を削除
-   - `export default app` に変更（Workers は fetch ハンドラーをエクスポートする形式）
-
-6. **D1 データベース作成**
-   ```bash
-   pnpm wrangler d1 create hono-db
-   # 出力された database_id を wrangler.toml に追記
-   ```
-
-7. **`drizzle/schema.ts` を sqlite-core に変更**（D1 は SQLite ベース）
-
-8. **`src/lib/drizzle.ts` を D1 バインディング用に変更**
+2. **`next.config.ts` に next-on-pages プラグインを追加**
    ```ts
-   import { drizzle } from "drizzle-orm/d1";
-   export const createDb = (d1: D1Database) => drizzle(d1, { schema });
+   import { setupDevPlatform } from '@cloudflare/next-on-pages/next-dev';
+   if (process.env.NODE_ENV === 'development') {
+     await setupDevPlatform();
+   }
+   // withNextOnPages を wrap するか、または単純に設定追加
    ```
 
-9. **マイグレーション実行**
+3. **各 page/route に Edge Runtime を宣言**（Node.js API を使う箇所は対応が必要）
+   ```ts
+   export const runtime = 'edge';
+   ```
+
+4. **`wrangler.toml` に Pages 用設定を追記**
+   ```toml
+   name = "nextjs-app"
+   pages_build_output_dir = ".vercel/output/static"
+   compatibility_date = "2024-01-01"
+   compatibility_flags = ["nodejs_compat"]
+   ```
+
+5. **`package.json` にビルドスクリプト追加**
+   ```json
+   "pages:build": "next-on-pages",
+   "pages:deploy": "wrangler pages deploy"
+   ```
+
+6. **ビルド & デプロイ**
    ```bash
-   pnpm wrangler d1 migrations apply hono-db --local   # ローカル確認
-   pnpm wrangler d1 migrations apply hono-db           # 本番 D1 に適用
+   pnpm pages:build
+   pnpm pages:deploy
    ```
-
-10. **デプロイ**
-    ```bash
-    pnpm wrangler deploy
-    ```

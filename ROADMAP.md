@@ -187,7 +187,7 @@
 > リポジトリ: `cloudflare-workspace`（新規作成）
 
 - [x] Hono API を Cloudflare Workers としてデプロイ
-- [ ] Cloudflare D1（SQLite 互換 DB）との連携
+- [x] Cloudflare D1（SQLite 互換 DB）との連携
 - [ ] Cloudflare Pages に Next.js をデプロイ
 
 ---
