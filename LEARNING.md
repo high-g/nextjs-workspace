@@ -4,6 +4,51 @@
 
 ---
 
+## SST v3
+
+**SST（Serverless Stack）とは**
+AWS へのデプロイを Wrangler 的な手軽さで実現するフレームワーク。OpenNext を内蔵しており、Next.js を Lambda + CloudFront 構成にワンコマンドでデプロイできる。インフラを TypeScript で定義する（AWS CDK のラッパー）。
+
+```bash
+npx create-sst@latest
+sst deploy   # デプロイ
+sst dev      # ローカル開発（実際の AWS リソースに接続）
+```
+
+```ts
+// sst.config.ts — これだけで Lambda + CloudFront 構成が完成
+export default $config({
+  app(input) {
+    return { name: "my-app", home: "aws" }
+  },
+  async run() {
+    new sst.aws.Nextjs("MyApp")
+  }
+})
+```
+
+**SSTの思想：`sst dev` はローカルエミュレータを使わない**
+`wrangler dev` はローカルで Workers を再現するが、`sst dev` は実際の AWS リソース（Lambda・DynamoDB など）にローカルから直接接続する。エミュレータのズレがない代わりに AWS 料金が発生する。
+
+**主流かどうか**
+- スタートアップ・個人開発では人気（GitHub ★2万超）
+- 大企業は CDK 直書きか Terraform が多い
+- Next.js × AWS の組み合わせでは事実上のデファクト
+
+**他の選択肢との比較**
+
+| ツール | 手軽さ | 自由度 | Next.js 対応 |
+|---|---|---|---|
+| SST v3 | ◎ | ◎ | ◎（OpenNext 内蔵） |
+| AWS Amplify | ◎ | △（制限多い） | ○ |
+| Serverless Framework | ○ | ○ | △（プラグイン依存） |
+| CDK 直書き | △ | ◎ | 自前構築 |
+
+**なぜ Phase 7 では使わないか**
+SST は Lambda / API Gateway / CloudFront の複雑さを隠す。Phase 7 はその仕組みを学ぶフェーズなので、手動 zip + AWS CLI / SAM で「素の Lambda」を体験してから「SST はこれを自動化するもの」と理解する順序が正しい。
+
+---
+
 ## AWS Lambda + API Gateway
 
 **Lambda（AWS Lambda）**
