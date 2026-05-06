@@ -21,7 +21,7 @@
 | 4/11〜4/15 | CodeDeploy 自動デプロイ | ✅ |
 | 4/16〜4/28 | AWS ECS + ECR | ✅ |
 | 4/23 | Next.js 書籍 | ✅ |
-| 4/29〜5/5 | Cloudflare デプロイ（Workers / D1 / Pages） | |
+| 4/29〜5/5 | Cloudflare デプロイ（Workers / D1 / Pages） | ✅ |
 | 5/6〜5/8 | AWS Lambda + API Gateway | |
 | 5/9 | Vercel デプロイ | |
 | 5/10〜5/12 | Next.js 16.2 の理解 | |
@@ -182,17 +182,17 @@
 
 ---
 
-## Phase 6: Cloudflare デプロイ（4/29〜5/5）
+## Phase 6: Cloudflare デプロイ（4/29〜5/5） ✅
 
 > リポジトリ: `cloudflare-workspace`（新規作成）
 
 - [x] Hono API を Cloudflare Workers としてデプロイ
 - [x] Cloudflare D1（SQLite 互換 DB）との連携
 - [x] Next.js を Cloudflare Workers にデプロイ（OpenNext 経由）
-- [ ] App Router 実装（Route Handlers / Server Components / Server Actions）
-  - [ ] Route Handlers — `app/api/posts/route.ts` で hono-api に繋ぐ
-  - [ ] Server Components — posts 一覧をサーバー側で取得・描画
-  - [ ] Server Actions — 投稿フォームからPOST処理
+- [x] App Router 実装（Route Handlers / Server Components / Server Actions）
+  - [x] Route Handlers — `app/api/posts/route.ts` で hono-api に繋ぐ
+  - [x] Server Components — posts 一覧をサーバー側で取得・描画
+  - [x] Server Actions — 投稿フォームからPOST処理
 
 ---
 

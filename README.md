@@ -73,8 +73,8 @@ pnpm dev:web   # nextjs を起動
 | Phase 3.5 | PostgreSQL 移行 | 完了 | nextjs-workspace |
 | Phase 4 | AWS EC2 / CodeDeploy / ECS + ECR | 完了 | nextjs-workspace |
 | Phase 5 | Next.js 書籍（読書） | 完了 | — |
-| Phase 6 | Cloudflare Workers / D1 / Pages | 進行中 | cloudflare-workspace |
-| Phase 7 | AWS Lambda + API Gateway | 未着手 | lambda-workspace |
+| Phase 6 | Cloudflare Workers / D1 / Pages | 完了 | cloudflare-workspace |
+| Phase 7 | AWS Lambda + API Gateway | 進行中 | lambda-workspace |
 | Phase 8 | Vercel デプロイ | 未着手 | nextjs-workspace |
 | Phase 9 | Next.js 16.2 の理解 | 未着手 | nextjs-workspace |
 | Phase 10 | React 19 の理解 | 未着手 | nextjs-workspace |

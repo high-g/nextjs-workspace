@@ -27,9 +27,9 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 6: Cloudflare デプロイ 進行中 — 5/3）
+## 現在の状況（Phase 7: AWS Lambda + API Gateway 進行中 — 5/6）
 
-Workers デプロイ・D1 連携まで完了。残りは Cloudflare Pages への Next.js デプロイ。
+Phase 6 Cloudflare デプロイ完了（Workers / D1 / Pages）。現在は Phase 7 AWS Lambda + API Gateway を開始。
 
 ### リポジトリ構成
 
@@ -94,180 +94,6 @@ nextjs-workspace/
 - Dockerfile をローカル dev 用（`Dockerfile.dev`）と本番用（`Dockerfile`）に分離 → docker-compose は `Dockerfile.dev` を参照
 
 ---
-
-## 補足・用語解説
-
-### Cloudflare
-
-**Cloudflare Workers**
-サーバーレスで動く JavaScript/TypeScript の実行環境。Node.js ではなく V8 アイソレートベースなので、Node.js の API（`fs` / `net` / TCP など）は使えない。`pg`（TCP 接続）が動かないため DB は D1 や Neon（HTTP ベース）を使う。Hono は最初から Workers に対応しており、`export default app` でそのままデプロイできる。
-
-**Cloudflare D1**
-Cloudflare が提供する SQLite 互換のサーバーレス DB。Workers から `env.DB`（バインディング）経由でアクセスする。Drizzle が D1 をサポート（`drizzle-orm/d1`）。`wrangler d1 create <name>` で作成、`wrangler d1 migrations apply` でマイグレーション実行。PostgreSQL と違い SQLite ベースなので `pg-core` → `sqlite-core` へのスキーマ変更が必要。
-
-**Wrangler**
-Cloudflare の CLI ツール。`wrangler login` でブラウザ認証、`wrangler dev` でローカル開発、`wrangler deploy` でデプロイ。`wrangler.toml` がプロジェクト設定ファイル（AWS でいう `serverless.yml` に相当）。
-
-**バインディング（Bindings）**
-Workers が外部リソース（D1 / KV / R2 など）にアクセスするための仕組み。`wrangler.toml` で定義し、ハンドラーの第2引数 `env` 経由でアクセスする。Hono では `c.env.DB` のように型付きで使える。
-
-**Workers のエントリーポイント**
-Node.js の `http.createServer` に相当するものが Workers では `fetch` ハンドラー。Hono は `app.fetch` を持つため `export default app` でそのままエントリーポイントになる。
-
-**Cloudflare Pages**
-静的サイトおよび SSR アプリのホスティングサービス。Next.js は `@cloudflare/next-on-pages` を使ってデプロイする。Edge Runtime 制約（Node.js API 不可）があるため、既存の Next.js コードが動かない箇所が出ることがある。
-
-**なぜ Workers と ECS でコードが異なるのか**
-ECS（Fargate）は通常の Node.js プロセスを Docker コンテナで動かす。Workers は V8 アイソレートという全く別の実行環境。Node.js の API が使えない制約がある代わりに、コールドスタートがほぼゼロ・グローバルエッジ配信・無料枠が広いというメリットがある。
-
-
-
-### AWS 全般
-
-**ルートアカウントを使わない理由**
-AWS にはメールアドレスでログインする「ルートアカウント」がある。全権限を持つため漏洩すると致命的。日常的な操作は IAM ユーザーを作って行うのが基本。
-
-**IAM（Identity and Access Management）**
-AWS のアクセス権限管理サービス。「誰が何をできるか」を定義する。
-- **IAM ユーザー**: 人や CLI ツールが使うアカウント
-- **IAM ポリシー**: 権限の定義（例: S3 の読み取りのみ許可）
-- **IAM ロール**: EC2 や GitHub Actions など「人以外」に権限を与える仕組み
-
-**アクセスキーとシークレットキー**
-CLI や GitHub Actions が AWS を操作するための認証情報。パスワードと同じ扱いで厳重に管理する。漏洩したらすぐ無効化して再発行。
-`~/.aws/credentials` に保存される。複数プロファイル（`[default]` / `[ecr]` 等）を持てるが、プロファイル指定がなければ `[default]` が使われる。
-
-**IAM ポリシー vs ロールの違い**
-- **ポリシー**: 「何ができるか」を定義した JSON ドキュメント。単体では機能しない。
-- **ロール**: ポリシーを束ねて「誰かに渡せる」パッケージ。「誰が使えるか（信頼ポリシー）」も持つ。
-  - EC2・Lambda・ECS・GitHub Actions など「人以外」に権限を与えるために使う
-  - 名前に「ロール」とあれば IAM ロールのこと（AWS 全体で共通の概念）
-
-**インスタンスプロファイル**
-IAM ロールを EC2 に直接アタッチできないため存在する中間の入れ物。
-EC2 → インスタンスプロファイル → IAM ロール という構造になっている。
-ロールを削除する前にプロファイルから外す必要がある（`remove-role-from-instance-profile`）。
-
-**STS（Security Token Service）**
-「今この CLI を使っているのは誰か」を返すサービス。
-`aws sts get-caller-identity` で認証確認に使う。AssumeRole（他のロールへの切り替え）もここ経由。
-
-### ネットワーク・Linux 基礎
-
-**VPC（Virtual Private Cloud）**
-AWSの中に作る自分専用の仮想ネットワーク。CIDR（例: `10.0.0.0/16`）でIPアドレス範囲を定義し、サブネットで細分化する。
-
-**CIDR（Classless Inter-Domain Routing）**
-IPアドレスの範囲を表す記法。`/16` = 65,536個、`/24` = 256個、`/32` = 1個。数字が大きいほど範囲が狭い。
-セキュリティグループで `0.0.0.0/0` は「全IPを許可」、`x.x.x.x/32` は「特定の1IPのみ許可」。
-
-**NAT（Network Address Translation）**
-プライベートサブネットのEC2がインターネットに出るための仕組み。内→外は可能、外→内は不可（一方通行）。自宅ルーターと同じ仕組み。
-
-**NACL（Network Access Control List）**
-サブネット単位のファイアウォール。ステートレス（行きと帰りを個別に許可する必要あり）。実務ではデフォルト（全許可）のまま使い、セキュリティグループで制御するのが基本。
-
-**ステートフル vs ステートレス**
-- ステートフル（セキュリティグループ）: 通信の状態を覚えている。インバウンドを許可すれば戻り通信は自動許可。
-- ステートレス（NACL）: 毎回ゼロから判断。行きと帰りを両方明示的に設定する必要がある。
-
-**ARN（Amazon Resource Name）**
-AWSリソースを一意に識別するID。形式: `arn:aws:サービス:リージョン:アカウントID:リソース`。
-IAMポリシーでリソースを指定する時や、ログでリソースを特定する時に使う。読み方は「アーン」。
-
-### Linux・SSH 基礎
-
-**chmod の数字表記**
-`r=4, w=2, x=1` の足し算。`400` = 所有者のみ読み取り可（秘密鍵に使う）、`644` = 所有者が読み書き可・他は読み取りのみ、`777` = 全員が全操作可（危険）。
-
-**キーペア（SSH）**
-EC2接続のための公開鍵・秘密鍵のペア。秘密鍵（`.pem`）はダウンロード後 `chmod 400` で保護する。`chmod 400` にしないとSSHが「鍵が危険」として拒否する。
-
-**systemctl**
-Linuxのサービス（常駐プロセス）を管理するコマンド。`start` で起動、`enable` でOS起動時の自動起動設定。セットで使うのが基本。
-
-**usermod -aG**
-ユーザーをグループに追加するコマンド。`-a`（追加）`-G`（グループ指定）。Dockerを `sudo` なしで使うには `ec2-user` を `docker` グループに追加する。反映にはSSH再接続が必要。
-
-**yum**
-Amazon Linux（Red Hat系）のパッケージマネージャー。Mac の `brew`、Ubuntu の `apt` と同じ役割。
-
-**PATH と `/usr/local/bin`**
-`/usr/local/bin` は PATH に含まれているため、ここにバイナリを置くとコマンド名だけで実行できる。`chmod +x` で実行権限を付与する必要がある。
-
-### デプロイパターン
-
-**EC2 + CodeDeploy パターン**
-- EC2: 仮想サーバー。自分で管理する（OS・Docker のインストール等も自分で行う）
-- CodeDeploy: AWS のデプロイ自動化サービス。EC2 上の CodeDeploy エージェントが S3 から成果物を取得して実行する
-- 流れ: `GitHub Actions → S3 に成果物 upload → CodeDeploy → EC2 にデプロイ`
-
-**ECS + ECR パターン**
-- ECR: Docker イメージを保存する AWS のレジストリ（Docker Hub の AWS 版）
-- ECS: コンテナを動かすサービス。サーバー管理不要（Fargate モード）
-- 流れ: `GitHub Actions → ECR に push → ECS が自動で pull・起動`
-
-### Docker イメージ最適化
-
-**マルチステージビルド**
-Dockerfile 内で複数の `FROM` を使い、ビルド用と本番用のステージを分ける手法。
-- `AS builder` でビルドステージに名前をつける
-- 本番ステージで `COPY --from=builder` して必要なファイルだけ取り出す
-- ビルドツール（python・make・g++ 等）や devDependencies が本番イメージに含まれなくなる
-
-**`pnpm install --prod`**
-`devDependencies` を除外してインストールするオプション。本番で不要な `drizzle-kit`・`typescript`・`@types/*` 等が入らなくなる。
-`tsx` が devDependencies にあると `--prod` 後に使えないため、本番で必要なツールは `dependencies` に入れる必要がある。
-
-**Dockerfile vs Dockerfile.dev の使い分け**
-- `Dockerfile`: ECS 本番用。`--prod` インストール・`tsx src/index.ts` で起動
-- `Dockerfile.dev`: ローカル dev 用。フル deps・`pnpm dev`（tsx watch）で起動
-- `docker-compose.yml` は `Dockerfile.dev` を参照してローカル開発に使う
-
-**Docker レイヤー**
-Dockerfile の各命令（`FROM` / `RUN` / `COPY` 等）が1つのレイヤーになる。
-`docker push` はレイヤーごとに並行アップロードするため、変更のないレイヤーはスキップされる（キャッシュが効く）。
-
-**ECR レジストリ URI**
-`{アカウントID}.dkr.ecr.{リージョン}.amazonaws.com` の形式。
-Docker Hub の代わりに ECR を使う場合、`docker push` 先にこの URI を指定する。
-`aws ecr get-login-password | docker login` で認証してから push する。
-
-### S3・CodeDeploy 関連
-
-**S3 バケット**
-- S3 の保存領域の単位。バケット名はグローバル（全世界・全アカウント）で一意である必要がある
-- アカウントID をバケット名に含めるのが慣習（例: `nextjs-deploy-artifacts-513148686116`）
-- 今回の用途: GitHub Actions がデプロイ成果物（zip）を置く場所として使用
-
-**CodeDeploy エージェント**
-- EC2 上で常駐する Ruby 製のプロセス
-- AWS CodeDeploy サービスに定期的に「デプロイ指示来てる？」と問い合わせる（ポーリング）
-- インストール方法: AWS 公式 S3 バケット（`aws-codedeploy-ap-northeast-1`）からスクリプトをダウンロードして実行
-
-**インプレースデプロイ vs Blue/Green デプロイ**
-- インプレース: 既存のEC2インスタンスを停止 → 新しいコードで起動（シンプル・ダウンタイムあり）
-- Blue/Green: 新しいインスタンスを別途用意して切り替え（ダウンタイムなし・コスト高）
-- 学習用途ではインプレースで十分
-
-**CodeDeploy ライフサイクルイベントの順番**
-```
-BeforeInstall  → スクリプト実行（例: ディレクトリ削除・.env 退避）
-Install        → S3 の zip を destination に展開（CodeDeploy が自動実行）
-AfterInstall   → スクリプト実行（例: docker-compose up）
-```
-`runas` でスクリプトの実行ユーザーを指定できる。既存ファイルの削除は `root`、アプリ操作は `ec2-user` が基本。
-
-**CodeDeploy ログの読み方**
-ログファイル: `/var/log/aws/codedeploy-agent/codedeploy-agent.log`
-- ログレベル（INFO/WARN/ERROR）だけでなく `"command_status":"Failed"` や `[stderr]` も探す
-- `[stderr]` の後が実際のエラー内容（例: `docker: 'compose' is not a docker command`）
-
-**stdout vs stderr**
-- `stdout`（標準出力）: 正常な出力
-- `stderr`（標準エラー出力）: エラーメッセージの出力
-- `2>/dev/null`: stderr を捨てる（エラーを無視する）
-- `|| true`: コマンドが失敗しても `set -e` でスクリプトが止まらないようにする
 
 ### 完了済み：IAM セットアップ
 
@@ -367,8 +193,9 @@ aws sts get-caller-identity
 - `relation "posts" does not exist` → 新規 DB なのでマイグレーション未実行 → EC2 で `docker-compose run --rm hono-api sh -c "pnpm exec drizzle-kit migrate && pnpm seed:drizzle"` を実行
 - Turbopack が QEMU エミュレーション下でクラッシュ → GitHub Actions（native amd64）でビルドすることで解決
 
-### 完了済み：Cloudflare Workers + D1 デプロイ（cloudflare-workspace）
+### 完了済み：Cloudflare デプロイ全般（cloudflare-workspace）
 
+**Workers + D1**
 - Hono API を Workers としてデプロイ済み（`export default app` 形式に変更）
 - D1 データベース作成済み（`wrangler d1 create`）
 - Drizzle スキーマを `pg-core` → `sqlite-core` に変更済み
@@ -376,43 +203,42 @@ aws sts get-caller-identity
 - マイグレーション・シード実行済み
 - `pnpm wrangler deploy` でデプロイ・疎通確認済み
 
-### 次回やること：Cloudflare Pages デプロイ（`cloudflare-workspace` で作業）
+**Cloudflare Pages（Next.js デプロイ）**
+- `@cloudflare/next-on-pages`（OpenNext 経由）でデプロイ済み
+- Edge Runtime 対応（各 page/route に `export const runtime = 'edge'` 宣言）
+- Route Handlers / Server Components / Server Actions の疎通確認済み
 
-1. **`@cloudflare/next-on-pages` インストール**
+### 次回やること：AWS Lambda + API Gateway（`lambda-workspace` で作業）
+
+1. **`lambda-workspace` リポジトリを初期化**
    ```bash
-   pnpm add -D @cloudflare/next-on-pages vercel
+   mkdir lambda-workspace && cd lambda-workspace
+   pnpm init
+   pnpm add hono @hono/node-server
+   pnpm add -D @types/aws-lambda
    ```
 
-2. **`next.config.ts` に next-on-pages プラグインを追加**
+2. **Hono を Lambda ハンドラーとして実装**
    ```ts
-   import { setupDevPlatform } from '@cloudflare/next-on-pages/next-dev';
-   if (process.env.NODE_ENV === 'development') {
-     await setupDevPlatform();
-   }
-   // withNextOnPages を wrap するか、または単純に設定追加
+   // src/index.ts
+   import { Hono } from 'hono'
+   import { handle } from 'hono/aws-lambda'
+
+   const app = new Hono()
+   app.get('/posts', (c) => c.json({ posts: [] }))
+
+   export const handler = handle(app)
    ```
 
-3. **各 page/route に Edge Runtime を宣言**（Node.js API を使う箇所は対応が必要）
-   ```ts
-   export const runtime = 'edge';
-   ```
+3. **Lambda 関数を AWS にデプロイ**
+   - IAM ロール `lambdaExecutionRole` 作成（`AWSLambdaBasicExecutionRole` ポリシー）
+   - zip してデプロイ or AWS SAM / Serverless Framework を使用
 
-4. **`wrangler.toml` に Pages 用設定を追記**
-   ```toml
-   name = "nextjs-app"
-   pages_build_output_dir = ".vercel/output/static"
-   compatibility_date = "2024-01-01"
-   compatibility_flags = ["nodejs_compat"]
-   ```
+4. **API Gateway と連携**
+   - HTTP API（API Gateway v2）を作成
+   - Lambda 統合を設定してエンドポイントを公開
 
-5. **`package.json` にビルドスクリプト追加**
-   ```json
-   "pages:build": "next-on-pages",
-   "pages:deploy": "wrangler pages deploy"
-   ```
-
-6. **ビルド & デプロイ**
-   ```bash
-   pnpm pages:build
-   pnpm pages:deploy
-   ```
+5. **ECS との比較を整理**
+   - コスト（リクエスト課金 vs 常時起動）
+   - コールドスタート（Lambda の特性）
+   - ユースケースの違い
