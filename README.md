@@ -75,12 +75,10 @@ pnpm dev:web   # nextjs を起動
 | Phase 5 | Next.js 書籍（読書） | 完了 | — |
 | Phase 6 | Cloudflare Workers / D1 / Pages | 完了 | cloudflare-workspace |
 | Phase 7 | AWS Lambda + API Gateway | 進行中 | lambda-workspace |
-| Phase 8 | Vercel デプロイ | 未着手 | nextjs-workspace |
-| Phase 9 | Next.js 16.2 の理解 | 未着手 | nextjs-workspace |
-| Phase 10 | React 19 の理解 | 未着手 | nextjs-workspace |
-| Phase 11 | Vite + | 未着手 | — |
-| Phase 12 | TanStack Start | 未着手 | — |
-| Phase 13 | neverthrow | 未着手 | — |
-| Phase 14 | Effect | 未着手 | — |
+| Phase 8 | React 19 の理解 | 未着手 | — |
+| Phase 9 | TanStack Start | 未着手 | — |
+| Phase 10 | Vite + | 未着手 | — |
+| Phase 11 | neverthrow | 未着手 | — |
+| Phase 12 | Effect | 未着手 | — |
 
 詳細は [ROADMAP.md](./ROADMAP.md) を参照。

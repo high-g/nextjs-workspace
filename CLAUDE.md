@@ -40,12 +40,12 @@ Phase 6 Cloudflare デプロイ完了（Workers / D1 / Pages）。現在は Phas
 ### 方針
 
 - 4/29〜5/5: Cloudflare デプロイ（Workers → D1 → Pages の順）
-- 5/6〜5/8: AWS Lambda + API Gateway
-- 5/9: Vercel デプロイ
-- 5/10〜5/12: Next.js 16.2 の理解
-- 5/13〜5/15: React 19 の理解
-- 5/16〜5/17: Vite+
-- 5/18〜: TanStack Start / neverthrow / Effect
+- 5/6〜5/10: AWS Lambda + API Gateway
+- 5/11〜5/13: React 19 の理解
+- 5/14〜5/17: TanStack Start
+- 5/18〜5/21: Vite+
+- 5/22〜5/26: neverthrow（Honoで扱う場合を考えながら）
+- 5/27〜5/31: Effect（Honoで扱う場合を考えながら）
 
 ### 構成
 

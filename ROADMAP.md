@@ -17,19 +17,18 @@
 | 3/30〜 | Prisma / Drizzle（サーバーサイドTSで利用するORMを理解） | ✅ |
 | 4/1〜 | Docker（Dockerfile・docker build/run・docker compose・DevContainer） | ✅ |
 | 4/2〜4/4 | DB移行（SQLite → PostgreSQL） | ✅ |
-| 4/4〜4/10 | AWS EC2 直接デプロイ | ✅ |
-| 4/11〜4/15 | CodeDeploy 自動デプロイ | ✅ |
-| 4/16〜4/28 | AWS ECS + ECR | ✅ |
+| 4/4〜4/10 | EC2 デプロイ（EC2上でHono、Next.jsを動作させる） | ✅ |
+| 4/11〜4/15 | CodeDeploy（ツールチームの環境に合わせた内容を理解） | ✅ |
+| 4/16〜4/22 | ECR + ECS デプロイ（ECSを利用し、AWS上でHono、Next.jsを動作させる） | ✅ |
 | 4/23 | Next.js 書籍 | ✅ |
-| 4/29〜5/5 | Cloudflare デプロイ（Workers / D1 / Pages） | ✅ |
-| 5/6〜5/8 | AWS Lambda + API Gateway | |
-| 5/9 | Vercel デプロイ | |
-| 5/10〜5/12 | Next.js 16.2 の理解 | |
-| 5/13〜5/15 | React 19 の理解 | |
-| 5/16〜5/17 | Vite + | |
-| 5/18〜5/21 | TanStack Start | |
-| 5/22〜5/26 | neverthrow（Hono との組み合わせ） | |
-| 5/27〜5/31 | Effect（Hono との組み合わせ） | |
+| 4/24〜4/28 | ECR + ECS デプロイ（続き） | ✅ |
+| 4/29〜5/5 | Cloudflare デプロイ（pages, workers） | ✅ |
+| 5/6〜5/10 | AWS Lambda + API Gateway | |
+| 5/11〜5/13 | React 19 の理解 | |
+| 5/14〜5/17 | TanStack Start | |
+| 5/18〜5/21 | Vite + | |
+| 5/22〜5/26 | neverthrow（Honoで扱う場合を考えながら） | |
+| 5/27〜5/31 | Effect（Honoで扱う場合を考えながら） | |
 
 ---
 
@@ -196,7 +195,7 @@
 
 ---
 
-## Phase 7: AWS Lambda + API Gateway（5/6〜5/8）
+## Phase 7: AWS Lambda + API Gateway（5/6〜5/10）
 
 > リポジトリ: `lambda-workspace`（新規作成）
 
@@ -207,51 +206,35 @@
 
 ---
 
-## Phase 8: Vercel デプロイ（5/9）
-
-- [ ] Next.js を Vercel にデプロイ
-- [ ] Hono API を Vercel Functions としてデプロイ
-- [ ] 環境変数の設定（`HONO_API_URL` など）
-- [ ] プレビューデプロイの活用
-
----
-
-## Phase 9: Next.js 16.2 の理解（5/10〜5/12）
-
-- [ ] Next.js 16.2 の新機能を把握
-- [ ] 既存コードへの影響を確認・対応
-
----
-
-## Phase 10: React 19 の理解（5/13〜5/15）
+## Phase 8: React 19 の理解（5/11〜5/13）
 
 - [ ] React 19 の新機能を把握（Actions・use フック など）
 - [ ] Next.js App Router との関係を整理
 
 ---
 
-## Phase 11: Vite +（5/16〜5/17）
-
-- [ ] Vite の基本概念を理解
-- [ ] Next.js との違い・使い分けを整理
-
----
-
-## Phase 12: TanStack Start（5/18〜5/21）
+## Phase 9: TanStack Start（5/14〜5/17）
 
 - [ ] TanStack Start の基本概念を理解
 - [ ] Next.js App Router との比較
 
 ---
 
-## Phase 13: neverthrow（5/22〜5/26）
+## Phase 10: Vite +（5/18〜5/21）
+
+- [ ] Vite の基本概念を理解
+- [ ] Next.js との違い・使い分けを整理
+
+---
+
+## Phase 11: neverthrow（5/22〜5/26）
 
 - [ ] neverthrow の基本（`Result` 型・`ok` / `err`）
 - [ ] Hono のルートハンドラーで neverthrow を使ったエラーハンドリング
 
 ---
 
-## Phase 14: Effect（5/27〜5/31）
+## Phase 12: Effect（5/27〜5/31）
 
 - [ ] Effect の基本概念を理解
 - [ ] Hono との組み合わせで実用的なパターンを試す
