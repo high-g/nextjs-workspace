@@ -24,7 +24,7 @@
 | 4/24〜4/28 | ECR + ECS デプロイ（続き） | ✅ |
 | 4/29〜5/5 | Cloudflare デプロイ（pages, workers） | ✅ |
 | 5/6〜5/10 | AWS Lambda + API Gateway | ✅ |
-| 5/11〜5/13 | React 19 の理解 | 🔄 |
+| 5/11〜5/13 | React 18 / 19 の理解 | 🔄 |
 | 5/14〜5/17 | TanStack Start | |
 | 5/18〜5/21 | Vite + | |
 | 5/22〜5/26 | neverthrow（Honoで扱う場合を考えながら） | |
@@ -206,10 +206,30 @@
 
 ---
 
-## Phase 8: React 19 の理解（5/11〜5/13）
+## Phase 8: React 18 / 19 の理解（5/11〜5/13）
 
-- [ ] React 19 の新機能を把握（Actions・use フック など）
-- [ ] Next.js App Router との関係を整理
+### React 18（並行レンダリング）
+
+- [ ] `createRoot` — React 18 の並行機能を有効にするエントリーポイント
+- [ ] 自動バッチング — `setTimeout` / Promise 内でも複数 setState が1レンダーにまとまる
+- [ ] `useTransition` / `startTransition` — 緊急度の低い更新を後回しにして UI の応答性を保つ
+- [ ] `useDeferredValue` — 値の反映を遅延させる（`useTransition` の値版）
+- [ ] `useId` — SSR/CSR で一致する一意 ID を生成（`htmlFor` などに使う）
+- [ ] Suspense + ストリーミング SSR — HTML を部分的にストリームで返す仕組みを理解
+- [ ] StrictMode の挙動変化 — 開発時に useEffect が2回実行される理由を把握
+- [ ] Next.js App Router との関係整理 — `loading.tsx` / `useTransition` の内部との対応
+
+### React 19（サーバー連携・フォーム操作）
+
+- [ ] `useActionState` — フォーム送信の pending / error / result を1フックで管理
+- [ ] `<form action={fn}>` — フォームの action に非同期関数を渡す（onSubmit 不要）
+- [ ] `useFormStatus` — 親フォームの pending を子コンポーネントで参照
+- [ ] `useOptimistic` — 楽観的 UI 更新（失敗時は自動ロールバック）
+- [ ] `use(promise)` — レンダー中にプロミスを読む（条件分岐内でも使える）
+- [ ] `ref` が props に — `forwardRef` 廃止・既存コードの書き換え方を把握
+- [ ] `<Context>` がプロバイダに — `<Context.Provider>` → `<Context>` への書き換え
+- [ ] ドキュメントメタデータ — コンポーネント内の `<title>` / `<meta>` が `<head>` に移動
+- [ ] RSC / Server Actions の位置付け — Next.js 実験機能から React 本体の正式機能になった経緯を理解
 
 ---
 

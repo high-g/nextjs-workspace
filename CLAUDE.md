@@ -226,8 +226,18 @@ aws sts get-caller-identity
 - コールドスタート: Lambda は一定時間未使用で数百ms〜数秒の遅延が発生、ECS はなし
 - ユースケース: Lambda → 散発的リクエスト・イベント駆動、ECS → 常時接続・WebSocket・長時間処理
 
-### 次回やること：Phase 8: React 19 の理解（5/11〜5/13）
+### 次回やること：Phase 8: React 18 / 19 の理解（5/11〜5/13）
 
-- React 19 の新機能を把握（Actions・use フック など）
-- Next.js App Router との関係を整理
-- 参考: [React 19 リリースノート](https://react.dev/blog/2024/12/05/react-19)
+**React 18（Day 1）**
+- `useTransition` / `useDeferredValue` / 自動バッチングをコードで試す
+- StrictMode が useEffect を2回実行する理由を把握
+- Next.js の `loading.tsx` / ルーティングとの対応を整理
+
+**React 19（Day 2〜3）**
+- `useActionState` + `<form action={fn}>` + `useFormStatus` をローカルで試す
+- `useOptimistic` / `use(promise)` を試す
+- `forwardRef` → `ref` props / `<Context.Provider>` → `<Context>` への書き換えを把握
+
+参考:
+- React 18: https://ja.react.dev/blog/2022/03/29/react-v18
+- React 19: https://ja.react.dev/blog/2024/12/05/react-19
