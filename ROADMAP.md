@@ -23,8 +23,8 @@
 | 4/23 | Next.js 書籍 | ✅ |
 | 4/24〜4/28 | ECR + ECS デプロイ（続き） | ✅ |
 | 4/29〜5/5 | Cloudflare デプロイ（pages, workers） | ✅ |
-| 5/6〜5/10 | AWS Lambda + API Gateway | |
-| 5/11〜5/13 | React 19 の理解 | |
+| 5/6〜5/10 | AWS Lambda + API Gateway | ✅ |
+| 5/11〜5/13 | React 19 の理解 | 🔄 |
 | 5/14〜5/17 | TanStack Start | |
 | 5/18〜5/21 | Vite + | |
 | 5/22〜5/26 | neverthrow（Honoで扱う場合を考えながら） | |
@@ -199,10 +199,10 @@
 
 > リポジトリ: `lambda-workspace`（新規作成）
 
-- [ ] Lambda の基本概念を理解
-- [ ] Hono を Lambda ハンドラーとして動作させる
-- [ ] API Gateway と連携してエンドポイントを公開
-- [ ] ECS との比較 — コスト・コールドスタート・ユースケース
+- [x] Lambda の基本概念を理解
+- [x] Hono を Lambda ハンドラーとして動作させる（`hono/aws-lambda` の `handle()` でラップ、esbuild で ESM バンドル）
+- [x] API Gateway と連携してエンドポイントを公開（HTTP API v2、Lambda 統合、疎通確認済み）
+- [x] ECS との比較 — コスト・コールドスタート・ユースケース
 
 ---
 

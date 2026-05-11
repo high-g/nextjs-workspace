@@ -74,8 +74,8 @@ pnpm dev:web   # nextjs を起動
 | Phase 4 | AWS EC2 / CodeDeploy / ECS + ECR | 完了 | nextjs-workspace |
 | Phase 5 | Next.js 書籍（読書） | 完了 | — |
 | Phase 6 | Cloudflare Workers / D1 / Pages | 完了 | cloudflare-workspace |
-| Phase 7 | AWS Lambda + API Gateway | 進行中 | lambda-workspace |
-| Phase 8 | React 19 の理解 | 未着手 | — |
+| Phase 7 | AWS Lambda + API Gateway | 完了 | lambda-workspace |
+| Phase 8 | React 19 の理解 | 進行中 | — |
 | Phase 9 | TanStack Start | 未着手 | — |
 | Phase 10 | Vite + | 未着手 | — |
 | Phase 11 | neverthrow | 未着手 | — |

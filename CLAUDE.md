@@ -27,9 +27,9 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 7: AWS Lambda + API Gateway 進行中 — 5/6）
+## 現在の状況（Phase 8: React 19 の理解 進行中 — 5/11〜5/13）
 
-Phase 6 Cloudflare デプロイ完了（Workers / D1 / Pages）。現在は Phase 7 AWS Lambda + API Gateway を開始。
+Phase 7 AWS Lambda + API Gateway 完了（Lambda 実装・API Gateway 疎通・ECS 比較整理まで完了）。現在は Phase 8 React 19 の理解を開始。
 
 ### リポジトリ構成
 
@@ -208,37 +208,26 @@ aws sts get-caller-identity
 - Edge Runtime 対応（各 page/route に `export const runtime = 'edge'` 宣言）
 - Route Handlers / Server Components / Server Actions の疎通確認済み
 
-### 次回やること：AWS Lambda + API Gateway（`lambda-workspace` で作業）
+### 完了済み：AWS Lambda + API Gateway（5/6〜5/10）
 
-1. **`lambda-workspace` リポジトリを初期化**
-   ```bash
-   mkdir lambda-workspace && cd lambda-workspace
-   pnpm init
-   pnpm add hono @hono/node-server
-   pnpm add -D @types/aws-lambda
-   ```
+- リポジトリ初期化（`pnpm init`、`.gitignore` 追加）
+- 依存パッケージインストール（`hono`、`@types/aws-lambda`、`tsx`、`esbuild`）
+- `src/index.ts` 作成（Hono × Lambda ハンドラー、`hono/aws-lambda` の `handle()` でラップ）
+- esbuild でバンドル（ESM 形式、`dist/index.mjs`）
+- zip 化（`dist/function.zip`）
+- IAM ロール作成（`lambda-hono-role`、`AWSLambdaBasicExecutionRole` ポリシー）
+- Lambda 関数作成・zip アップロード（`hono-api`、Node.js 24.x）
+- API Gateway（HTTP API v2）作成・Lambda 統合・エンドポイント公開
+- `curl https://wl23aup7d5.execute-api.ap-northeast-1.amazonaws.com/posts` で `{"posts":[]}` の疎通確認済み
 
-2. **Hono を Lambda ハンドラーとして実装**
-   ```ts
-   // src/index.ts
-   import { Hono } from 'hono'
-   import { handle } from 'hono/aws-lambda'
+### 完了済み：ECS との比較整理（Phase 7 最終タスク）
 
-   const app = new Hono()
-   app.get('/posts', (c) => c.json({ posts: [] }))
+- コスト: Lambda はリクエスト課金（アイドル時ゼロ）、ECS は常時起動課金
+- コールドスタート: Lambda は一定時間未使用で数百ms〜数秒の遅延が発生、ECS はなし
+- ユースケース: Lambda → 散発的リクエスト・イベント駆動、ECS → 常時接続・WebSocket・長時間処理
 
-   export const handler = handle(app)
-   ```
+### 次回やること：Phase 8: React 19 の理解（5/11〜5/13）
 
-3. **Lambda 関数を AWS にデプロイ**
-   - IAM ロール `lambdaExecutionRole` 作成（`AWSLambdaBasicExecutionRole` ポリシー）
-   - zip してデプロイ or AWS SAM / Serverless Framework を使用
-
-4. **API Gateway と連携**
-   - HTTP API（API Gateway v2）を作成
-   - Lambda 統合を設定してエンドポイントを公開
-
-5. **ECS との比較を整理**
-   - コスト（リクエスト課金 vs 常時起動）
-   - コールドスタート（Lambda の特性）
-   - ユースケースの違い
+- React 19 の新機能を把握（Actions・use フック など）
+- Next.js App Router との関係を整理
+- 参考: [React 19 リリースノート](https://react.dev/blog/2024/12/05/react-19)

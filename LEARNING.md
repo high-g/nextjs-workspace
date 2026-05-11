@@ -65,6 +65,22 @@ Lambda をHTTPエンドポイントとして公開するためのサービス。
 **`hono/aws-lambda`**
 Hono が公式に提供する Lambda アダプター。`handle(app)` で Hono アプリを Lambda ハンドラーに変換できる。Lambda イベント（`APIGatewayProxyEventV2`）を Hono の Request に変換してくれる。
 
+**Lambda デプロイの手順（zip + esbuild）**
+TypeScript のまま Lambda に渡すことはできないため、事前にバンドルが必要。
+1. esbuild で TypeScript → JavaScript に変換（ESM 形式・外部モジュールはバンドルに含める）
+2. `dist/function.zip` に固める
+3. AWS コンソールまたは CLI でアップロード
+
+```bash
+# バンドル（node_modulesごとバンドルするため --bundle, --platform=node）
+esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.mjs
+
+# zip 化（dist/ ディレクトリ全体）
+cd dist && zip function.zip index.mjs
+```
+
+Lambda のランタイムは Node.js 24.x まで選択可能（2025年時点）。ESM 形式なら `--format=esm` + `.mjs` 拡張子にする必要がある。
+
 **Lambda と ECS の使い分け**
 - Lambda: イベント駆動・散発的なリクエスト・コスト最小化・ステートレスな処理に向く
 - ECS: 常時接続が必要・WebSocket・長時間処理・コンテナ依存の処理に向く
