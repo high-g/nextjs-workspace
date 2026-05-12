@@ -1,6 +1,8 @@
 "use client";
-
-// useTransition Sample
+/**
+ * useTransition Sample
+ * テキスト入力t中に重い処理を走らせると、UIがカクつくような重い処理をuseTransitionでラップすると、入力の快適さを保ったまま重い処理を実行できる
+ */
 
 import { useState, useTransition } from "react";
 
