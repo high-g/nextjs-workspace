@@ -1,21 +1,30 @@
 "use client";
 /**
  * useTransition Sample
- * テキスト入力t中に重い処理を走らせると、UIがカクつくような重い処理をuseTransitionでラップすると、入力の快適さを保ったまま重い処理を実行できる
+ * テキスト入力中に、UIがカクつくような重い処理をuseTransitionでラップすると、入力の快適さを保ったまま重い処理を実行できる
  */
 
 import { useState, useTransition } from "react";
 
-const ITEMS = Array.from({ length: 1000 }, (_, i) => `aいて無 ${i}`);
+const ITEMS = Array.from({ length: 1000 }, (_, i) => `アイテム ${i}`);
 
 export default function TransitionDemo() {
   const [query, setQuery] = useState("");
   const [filtered, setFiltered] = useState(ITEMS);
   const [isPending, startTransition] = useTransition();
 
+  function SlowItem({ text }: { text: string }) {
+    const start = Date.now();
+    while (Date.now() - start < 1) {} // 200ms ブロック
+    return <li>{text}</li>;
+  }
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     setQuery(value);
+
+    // setFiltered(ITEMS.filter((item) => item.includes(value)));
+
     startTransition(() => {
       setFiltered(ITEMS.filter((item) => item.includes(value)));
     });
@@ -27,7 +36,7 @@ export default function TransitionDemo() {
       {isPending && <p>Pending...</p>}
       <ul>
         {filtered.map((item) => (
-          <li key={item}>{item}</li>
+          <SlowItem key={item} text={item} />
         ))}
       </ul>
     </div>
