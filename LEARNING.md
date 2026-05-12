@@ -236,6 +236,90 @@ Docker Hub の代わりに ECR を使う場合、`docker push` 先にこの URI 
 
 ---
 
+## React 18 / 19
+
+### 並行レンダラ（Concurrent Renderer）
+
+React 18 の中心的な変更。UI の複数バージョンを同時に裏で準備し、優先度に応じて描画を中断・再開できる。ユーザーは直接触れない仕組みだが、`useTransition` / `useDeferredValue` はこれを利用する API。Next.js は内部で `createRoot` / `hydrateRoot` を使いこの機能を有効化している。
+
+### 自動バッチング
+
+React 17 以前は React のイベントハンドラ内の複数 `setState` しかバッチ処理されなかった。React 18 から `setTimeout` / `Promise.then` / ネイティブイベント内でも自動的にバッチ処理される。意図的に個別レンダーが必要な場合は `flushSync` を使う。
+
+### useTransition / startTransition
+
+「緊急度の低い更新」としてマークする API。マークした更新はユーザー入力（テキスト入力など）より後回しにされ、UI がブロックされない。`useTransition` はフックで `isPending`（ローディング状態）も返す。`startTransition` はフックなしでトランジション開始する関数版。
+
+```ts
+const [isPending, startTransition] = useTransition()
+startTransition(() => setSearchQuery(input))  // 遅延してよい更新
+```
+
+### useDeferredValue
+
+`useTransition` の「値」版。更新を遅延させたい値をラップする。例えばリスト絞り込みで入力値の反映を遅らせる場面に使う。`useTransition` は「呼び出し元が setState を制御できる場合」、`useDeferredValue` は「props や外部から来た値で制御できない場合」に使う。
+
+### useId
+
+SSR（サーバー側）と CSR（クライアント側）で一致する一意な ID を生成するフック。`htmlFor` / `aria-describedby` のようなアクセシビリティ属性に使う。ランダム ID（`Math.random()`）はハイドレーション時にサーバーとクライアントで不一致が起き警告が出るため、`useId` で解決する。
+
+### StrictMode の挙動変化（React 18）
+
+開発環境で `useEffect` が2回実行されるようになった。意図：副作用のクリーンアップ関数を正しく書けているかを検証するため。「マウント → アンマウント → 再マウント」を自動で行う。本番環境では発生しない。クリーンアップ関数を返さないと2回目の実行で二重登録・メモリリークが起きる可能性がある。
+
+### Actions の概念（React 19）
+
+transition 内で実行される非同期関数を「Action」と呼ぶ。`useActionState` / `useOptimistic` はこの概念の上に成り立つ。Action の中で pending 状態・エラー・楽観的更新が自動管理される。`<form action={fn}>` の `fn` も Action として扱われる。
+
+### useActionState（React 19）
+
+フォーム送信の pending / error / result を1つのフックで管理する。Server Actions と組み合わせて使う。
+
+```ts
+const [state, formAction, isPending] = useActionState(serverAction, initialState)
+```
+
+### useFormStatus（React 19）
+
+親フォームの送信状態（`pending` など）を子コンポーネントから参照するフック。送信ボタンを別コンポーネントに切り出したときに props バケツリレーを避けられる。
+
+### useOptimistic（React 19）
+
+リクエスト完了前に UI を先行更新し、失敗時に自動でロールバックするフック。楽観的更新のパターンをシンプルに実装できる。
+
+### use(promise)（React 19）
+
+Client Component のレンダー中にプロミスを読む API。他のフックと違い条件分岐内でも使える。Suspense と組み合わせてデータのフォールバック表示に使う。
+
+### ref が props に（React 19）
+
+`forwardRef` が不要になり、コンポーネント定義の第2引数ではなく props の `ref` として受け取れるようになった。
+
+```ts
+// Before（React 18）
+const Input = forwardRef((props, ref) => <input ref={ref} {...props} />)
+
+// After（React 19）
+const Input = ({ ref, ...props }) => <input ref={ref} {...props} />
+```
+
+### メタデータサポート（React 19）
+
+コンポーネント内で `<title>` / `<meta>` / `<link>` をレンダーすると、React が自動的に `<head>` に移動する。Next.js には `metadata` export（静的）と `generateMetadata`（動的）があるため、基本は Next.js の方法を使う。コンポーネント内で直接書きたい場面（ライブラリ・条件付きメタ等）との使い分けを把握する。
+
+### Next.js で対象外にした React 機能
+
+| 機能 | 理由 |
+|---|---|
+| `createRoot` / `hydrateRoot` | Next.js が内部処理 |
+| ストリーミング API（`renderToPipeableStream`） | Next.js が内部処理 |
+| `useInsertionEffect` | CSS-in-JS ライブラリ作者向け、アプリ開発では不要 |
+| プリロード API（`preload` / `preinit`） | Next.js の `<Image>` / `<Script>` が代替 |
+| スタイルシート / スクリプト管理 | Next.js が代替 |
+| 静的サイト生成 API（`prerender`） | Next.js が内部処理 |
+
+---
+
 ## S3・CodeDeploy 関連
 
 **S3 バケット**

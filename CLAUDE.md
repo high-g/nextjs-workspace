@@ -27,25 +27,15 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 8: React 19 の理解 進行中 — 5/11〜5/13）
+## 現在の状況（Phase 8: React 18 / 19 の理解 進行中）
 
-Phase 7 AWS Lambda + API Gateway 完了（Lambda 実装・API Gateway 疎通・ECS 比較整理まで完了）。現在は Phase 8 React 19 の理解を開始。
+Phase 7 AWS Lambda + API Gateway 完了（Lambda 実装・API Gateway 疎通・ECS 比較整理まで完了）。現在は Phase 8 React 18 / 19 の理解を開始。公式ブログ（react-v18 / react-19）を精読し、ROADMAP の学習内容を網羅性チェック済み。Actions の概念・メタデータサポートを ROADMAP に追記。
 
 ### リポジトリ構成
 
 - `nextjs-workspace`: Docker + AWS（本リポジトリ）
 - `cloudflare-workspace`: Cloudflare Workers / D1 / Pages（新規作成）
 - `lambda-workspace`: AWS Lambda + API Gateway（新規作成）
-
-### 方針
-
-- 4/29〜5/5: Cloudflare デプロイ（Workers → D1 → Pages の順）
-- 5/6〜5/10: AWS Lambda + API Gateway
-- 5/11〜5/13: React 19 の理解
-- 5/14〜5/17: TanStack Start
-- 5/18〜5/21: Vite+
-- 5/22〜5/26: neverthrow（Honoで扱う場合を考えながら）
-- 5/27〜5/31: Effect（Honoで扱う場合を考えながら）
 
 ### 構成
 
@@ -134,7 +124,7 @@ aws sts get-caller-identity
 - `http://13.193.222.75:3000` でNext.js画面の表示確認済み
 - Hono API 経由で PostgreSQL への登録・取得も確認済み
 
-### 完了済み：CodeDeploy セットアップ（4/11 時点）
+### 完了済み：CodeDeploy セットアップ
 
 - S3 バケット作成済み（`nextjs-deploy-artifacts-513148686116`、ap-northeast-1）
 - CodeDeploy エージェントを EC2 にインストール・起動確認済み（`systemctl status codedeploy-agent`）
@@ -146,7 +136,7 @@ aws sts get-caller-identity
 - デプロイグループ `nextjs-deploy-group` 作成済み（インプレース / EC2タグ: Name=nextjs-server / ロードバランサーなし）
 - SSH 接続ショートカット設定済み（`~/.ssh/config` に `Host nextjs-server` 追加）
 
-### 完了済み：CodeDeploy 自動デプロイ（4/11〜4/15）
+### 完了済み：CodeDeploy 自動デプロイ
 
 - `appspec.yml` 作成済み（`overwrite: yes` / `BeforeInstall` + `AfterInstall` フック）
 - `scripts/before_install.sh` 作成済み（`.env` を退避してディレクトリ削除・復元）
@@ -163,7 +153,7 @@ aws sts get-caller-identity
 - `rm: Permission denied` → `before_install.sh` の `runas` を `root` に変更
 - SSH タイムアウト → 自分のIPが変わったためセキュリティグループを `0.0.0.0/0` に変更（学習用途）
 
-### 完了済み：ECR セットアップ（4/17〜4/18）
+### 完了済み：ECR セットアップ
 
 - ECR レジストリ URI: `513148686116.dkr.ecr.ap-northeast-1.amazonaws.com`
 - ECR リポジトリ作成済み（`hono-api` / `nextjs-app`、ミュータブル・AES-256）
@@ -173,7 +163,7 @@ aws sts get-caller-identity
 - `hono-api/Dockerfile.dev` 作成・`docker-compose.yml` を Dockerfile.dev に変更済み
 - hono-api / nextjs-app イメージを ECR に push 済み
 
-### 完了済み：ECS + ECR デプロイ（4/16〜4/28）
+### 完了済み：ECS + ECR デプロイ
 
 - ECS クラスター `nextjs-cluster` 作成済み（Fargate）
 - タスク定義 `nextjs-task` 作成済み（CPU 0.25vCPU・メモリ 0.5GB）
@@ -208,7 +198,7 @@ aws sts get-caller-identity
 - Edge Runtime 対応（各 page/route に `export const runtime = 'edge'` 宣言）
 - Route Handlers / Server Components / Server Actions の疎通確認済み
 
-### 完了済み：AWS Lambda + API Gateway（5/6〜5/10）
+### 完了済み：AWS Lambda + API Gateway
 
 - リポジトリ初期化（`pnpm init`、`.gitignore` 追加）
 - 依存パッケージインストール（`hono`、`@types/aws-lambda`、`tsx`、`esbuild`）
@@ -226,7 +216,7 @@ aws sts get-caller-identity
 - コールドスタート: Lambda は一定時間未使用で数百ms〜数秒の遅延が発生、ECS はなし
 - ユースケース: Lambda → 散発的リクエスト・イベント駆動、ECS → 常時接続・WebSocket・長時間処理
 
-### 次回やること：Phase 8: React 18 / 19 の理解（5/11〜5/13）
+### 次回やること：Phase 8: React 18 / 19 の理解
 
 **React 18（Day 1）**
 - `useTransition` / `useDeferredValue` / 自動バッチングをコードで試す
@@ -234,9 +224,11 @@ aws sts get-caller-identity
 - Next.js の `loading.tsx` / ルーティングとの対応を整理
 
 **React 19（Day 2〜3）**
+- Actions の概念（transition 内の非同期関数 = Action）を先に把握してから各フックに入る
 - `useActionState` + `<form action={fn}>` + `useFormStatus` をローカルで試す
 - `useOptimistic` / `use(promise)` を試す
 - `forwardRef` → `ref` props / `<Context.Provider>` → `<Context>` への書き換えを把握
+- メタデータサポート（コンポーネント内で `<title>` / `<meta>` をレンダー）と Next.js の `metadata` export との使い分けを整理
 
 参考:
 - React 18: https://ja.react.dev/blog/2022/03/29/react-v18

@@ -23,10 +23,10 @@
 | 4/23 | Next.js 書籍 | ✅ |
 | 4/24〜4/28 | ECR + ECS デプロイ（続き） | ✅ |
 | 4/29〜5/5 | Cloudflare デプロイ（pages, workers） | ✅ |
-| 5/6〜5/10 | AWS Lambda + API Gateway | ✅ |
-| 5/11〜5/13 | React 18 / 19 の理解 | 🔄 |
-| 5/14〜5/17 | TanStack Start | |
-| 5/18〜5/21 | Vite + | |
+| 5/6〜5/11 | AWS Lambda + API Gateway | ✅ |
+| 5/12〜5/15 | React 18 / 19 の理解 | 🔄 |
+| 5/15〜5/18 | TanStack Start | |
+| 5/19〜5/21 | Vite + | |
 | 5/22〜5/26 | neverthrow（Honoで扱う場合を考えながら） | |
 | 5/27〜5/31 | Effect（Honoで扱う場合を考えながら） | |
 
@@ -195,7 +195,7 @@
 
 ---
 
-## Phase 7: AWS Lambda + API Gateway（5/6〜5/10）
+## Phase 7: AWS Lambda + API Gateway（5/6〜5/11）
 
 > リポジトリ: `lambda-workspace`（新規作成）
 
@@ -206,7 +206,7 @@
 
 ---
 
-## Phase 8: React 18 / 19 の理解（5/11〜5/13）
+## Phase 8: React 18 / 19 の理解（5/12〜5/15）
 
 ### React 18（Next.js で使う機能）
 
@@ -231,17 +231,19 @@
 - [ ] `use(promise)` — Client Component のレンダー中にプロミスを読む（条件分岐内でも使える点が他フックと違う）
 - [ ] `ref` が props に — `forwardRef` 廃止。コンポーネント定義の簡素化を体験
 - [ ] `<Context>` がプロバイダに — `<ThemeContext.Provider>` → `<ThemeContext>` への書き換え
+- [ ] Actions の概念 — transition 内の非同期関数が Action。`useActionState` / `useOptimistic` の設計の前提となる仕組みを把握
+- [ ] メタデータサポート — コンポーネント内で `<title>` / `<meta>` をレンダーすると自動で `<head>` に移動（Next.js の `metadata` export との使い分けを把握）
 
 ---
 
-## Phase 9: TanStack Start（5/14〜5/17）
+## Phase 9: TanStack Start（5/15〜5/18）
 
 - [ ] TanStack Start の基本概念を理解
 - [ ] Next.js App Router との比較
 
 ---
 
-## Phase 10: Vite +（5/18〜5/21）
+## Phase 10: Vite +（5/19〜5/21）
 
 - [ ] Vite の基本概念を理解
 - [ ] Next.js との違い・使い分けを整理
