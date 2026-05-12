@@ -208,28 +208,29 @@
 
 ## Phase 8: React 18 / 19 の理解（5/11〜5/13）
 
-### React 18（並行レンダリング）
+### React 18（Next.js で使う機能）
 
-- [ ] `createRoot` — React 18 の並行機能を有効にするエントリーポイント
-- [ ] 自動バッチング — `setTimeout` / Promise 内でも複数 setState が1レンダーにまとまる
-- [ ] `useTransition` / `startTransition` — 緊急度の低い更新を後回しにして UI の応答性を保つ
-- [ ] `useDeferredValue` — 値の反映を遅延させる（`useTransition` の値版）
-- [ ] `useId` — SSR/CSR で一致する一意 ID を生成（`htmlFor` などに使う）
-- [ ] Suspense + ストリーミング SSR — HTML を部分的にストリームで返す仕組みを理解
-- [ ] StrictMode の挙動変化 — 開発時に useEffect が2回実行される理由を把握
-- [ ] Next.js App Router との関係整理 — `loading.tsx` / `useTransition` の内部との対応
+> `createRoot` / `hydrateRoot` / ストリーミング API は Next.js が内部処理するため対象外
 
-### React 19（サーバー連携・フォーム操作）
+- [ ] `useTransition` / `startTransition` — 緊急度の低い更新を後回しにして UI の応答性を保つ（例: 検索入力しながら結果を更新）
+- [ ] `useDeferredValue` — 値の反映を遅延させる（`useTransition` の値版。リスト絞り込みなどに使う）
+- [ ] `useId` — SSR/CSR で一致する一意 ID を生成（`htmlFor` / `aria-describedby` などに使う）
+- [ ] 自動バッチング — 複数の setState が1レンダーにまとまる仕組みを把握（意図せず依存している箇所を見つけるため）
+- [ ] StrictMode の挙動変化 — 開発時に `useEffect` が2回実行される理由と対処法を把握
+- [ ] Suspense の使い方 — `loading.tsx` に任せず自分で `<Suspense>` を書く場面を理解
 
-- [ ] `useActionState` — フォーム送信の pending / error / result を1フックで管理
-- [ ] `<form action={fn}>` — フォームの action に非同期関数を渡す（onSubmit 不要）
-- [ ] `useFormStatus` — 親フォームの pending を子コンポーネントで参照
-- [ ] `useOptimistic` — 楽観的 UI 更新（失敗時は自動ロールバック）
-- [ ] `use(promise)` — レンダー中にプロミスを読む（条件分岐内でも使える）
-- [ ] `ref` が props に — `forwardRef` 廃止・既存コードの書き換え方を把握
-- [ ] `<Context>` がプロバイダに — `<Context.Provider>` → `<Context>` への書き換え
-- [ ] ドキュメントメタデータ — コンポーネント内の `<title>` / `<meta>` が `<head>` に移動
-- [ ] RSC / Server Actions の位置付け — Next.js 実験機能から React 本体の正式機能になった経緯を理解
+### React 19（Next.js で使う機能）
+
+> `preload` / `preinit` / スタイルシート優先度 は Next.js の `<Image>` / `<Script>` で代替されるため対象外
+> RSC / Server Actions は Phase 1 で習得済みのため概念整理のみ
+
+- [ ] `useActionState` — フォーム送信の pending / error / result を1フックで管理（Server Actions と組み合わせる）
+- [ ] `<form action={fn}>` — フォームの `action` に Server Actions を渡す（`onSubmit` 不要）
+- [ ] `useFormStatus` — 送信ボタンなど子コンポーネントが親フォームの pending を参照
+- [ ] `useOptimistic` — リクエスト完了前に UI を先行更新し、失敗時に自動ロールバック
+- [ ] `use(promise)` — Client Component のレンダー中にプロミスを読む（条件分岐内でも使える点が他フックと違う）
+- [ ] `ref` が props に — `forwardRef` 廃止。コンポーネント定義の簡素化を体験
+- [ ] `<Context>` がプロバイダに — `<ThemeContext.Provider>` → `<ThemeContext>` への書き換え
 
 ---
 
