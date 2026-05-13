@@ -29,7 +29,7 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ## 現在の状況（Phase 8: React 18 / 19 の理解 進行中）
 
-Phase 7 AWS Lambda + API Gateway 完了（Lambda 実装・API Gateway 疎通・ECS 比較整理まで完了）。現在は Phase 8 React 18 / 19 の理解を開始。公式ブログ（react-v18 / react-19）を精読し、ROADMAP の学習内容を網羅性チェック済み。Actions の概念・メタデータサポートを ROADMAP に追記。
+Phase 7 AWS Lambda + API Gateway 完了（Lambda 実装・API Gateway 疎通・ECS 比較整理まで完了）。Phase 8 React 18 / 19 の理解を進行中。React 18 のうち `useTransition` / `useDeferredValue`（コード実装済み）/ `useId`（概念理解完了）が完了。残りは自動バッチング・StrictMode・Suspense。
 
 ### リポジトリ構成
 
@@ -216,14 +216,14 @@ aws sts get-caller-identity
 - コールドスタート: Lambda は一定時間未使用で数百ms〜数秒の遅延が発生、ECS はなし
 - ユースケース: Lambda → 散発的リクエスト・イベント駆動、ECS → 常時接続・WebSocket・長時間処理
 
-### 次回やること：Phase 8: React 18 / 19 の理解
+### 次回やること：Phase 8: React 18 / 19 の理解（続き）
 
-**React 18（Day 1）**
-- `useTransition` / `useDeferredValue` / 自動バッチングをコードで試す
-- StrictMode が useEffect を2回実行する理由を把握
-- Next.js の `loading.tsx` / ルーティングとの対応を整理
+**React 18（残り）**
+- 自動バッチングをコードで試す（`setTimeout` / `Promise.then` でも setState がまとまることを確認）
+- StrictMode が useEffect を2回実行する理由を把握・クリーンアップ関数の重要性を確認
+- Suspense の使い方 — `loading.tsx` に任せず自分で `<Suspense>` を書く場面を理解
 
-**React 19（Day 2〜3）**
+**React 19（次フェーズ）**
 - Actions の概念（transition 内の非同期関数 = Action）を先に把握してから各フックに入る
 - `useActionState` + `<form action={fn}>` + `useFormStatus` をローカルで試す
 - `useOptimistic` / `use(promise)` を試す
