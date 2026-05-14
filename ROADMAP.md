@@ -215,8 +215,8 @@
 - [x] `useTransition` / `startTransition` — 緊急度の低い更新を後回しにして UI の応答性を保つ（例: 検索入力しながら結果を更新）
 - [x] `useDeferredValue` — 値の反映を遅延させる（`useTransition` の値版。リスト絞り込みなどに使う）
 - [x] `useId` — SSR/CSR で一致する一意 ID を生成（`htmlFor` / `aria-describedby` などに使う）
-- [ ] 自動バッチング — 複数の setState が1レンダーにまとまる仕組みを把握（意図せず依存している箇所を見つけるため）
-- [ ] StrictMode の挙動変化 — 開発時に `useEffect` が2回実行される理由と対処法を把握
+- [x] 自動バッチング — 複数の setState が1レンダーにまとまる仕組みを把握（意図せず依存している箇所を見つけるため）
+- [x] StrictMode の挙動変化 — 開発時に `useEffect` が2回実行される理由と対処法を把握
 - [ ] Suspense の使い方 — `loading.tsx` に任せず自分で `<Suspense>` を書く場面を理解
 
 ### React 19（Next.js で使う機能）
