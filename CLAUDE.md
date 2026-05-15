@@ -29,7 +29,7 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ## 現在の状況（Phase 8: React 18 / 19 の理解 進行中）
 
-Phase 7 AWS Lambda + API Gateway 完了（Lambda 実装・API Gateway 疎通・ECS 比較整理まで完了）。Phase 8 React 18 / 19 の理解を進行中。React 18 のうち `useTransition` / `useDeferredValue`（コード実装済み）/ `useId` / 自動バッチング / StrictMode（概念理解完了）が完了。残りは Suspense のみ。
+Phase 7 AWS Lambda + API Gateway 完了。Phase 8 React 18 / 19 の理解を進行中。React 18（`useTransition` / `useDeferredValue` / `useId` / 自動バッチング / StrictMode / Suspense）すべて完了。次は React 19。
 
 ### リポジトリ構成
 
@@ -216,12 +216,8 @@ aws sts get-caller-identity
 - コールドスタート: Lambda は一定時間未使用で数百ms〜数秒の遅延が発生、ECS はなし
 - ユースケース: Lambda → 散発的リクエスト・イベント駆動、ECS → 常時接続・WebSocket・長時間処理
 
-### 次回やること：Phase 8: React 18 / 19 の理解（続き）
+### 次回やること：Phase 8: React 19
 
-**React 18（残り）**
-- Suspense の使い方 — `loading.tsx` に任せず自分で `<Suspense>` を書く場面を理解
-
-**React 19（次フェーズ）**
 - Actions の概念（transition 内の非同期関数 = Action）を先に把握してから各フックに入る
 - `useActionState` + `<form action={fn}>` + `useFormStatus` をローカルで試す
 - `useOptimistic` / `use(promise)` を試す

@@ -327,6 +327,45 @@ SSR（サーバー側）と CSR（クライアント側）で一致する一意�
 
 クリーンアップ関数を返さないと2回目の実行で二重登録・メモリリークが起きる。Next.js はデフォルトで `reactStrictMode: true`。
 
+### Suspense（React 18）
+
+コンポーネントが「まだ準備できていない」間、fallback を表示する仕組み。`loading.tsx` は Next.js がページ全体を `<Suspense>` でラップしたもの。自分で書くとコンポーネント単位で制御できる。
+
+**Suspense が動く条件（Next.js）**
+
+| パターン | 説明 |
+|---|---|
+| RSC の `async/await` | async Server Component を `<Suspense>` で囲む。ストリーミング SSR で fallback が先に送られ、解決後に差し替え |
+| `next/dynamic` + `ssr: false` | クライアント側で遅延ロード。SSR をスキップするため fallback が表示される |
+| `use(promise)` | React 19 の API。Client Component でプロミスを読む（React 19 フェーズで学習） |
+
+**`ssr: false` は Client Component でしか使えない**
+
+`next/dynamic({ ssr: false })` は Server Component で使うとエラーになる。`page.tsx` は Server Component のままにして、コンポジションパターンで Client Component に切り出す。
+
+```tsx
+// page.tsx（Server Component）
+import HeavyComponentWrapper from './HeavyComponentWrapper'
+export default function Page() {
+  return <HeavyComponentWrapper />
+}
+
+// HeavyComponentWrapper.tsx（Client Component）
+'use client'
+import dynamic from 'next/dynamic'
+const HeavyComponent = dynamic(() => import('./HeavyComponent'), {
+  ssr: false,
+  loading: () => <div>Loading...</div>,
+})
+export default function HeavyComponentWrapper() {
+  return <HeavyComponent />
+}
+```
+
+**SSR と Suspense fallback の関係**
+
+`ssr: true`（デフォルト）の場合、サーバーが解決を待ってから完成済み HTML を送るため fallback が表示されない。`ssr: false` またはストリーミング SSR（RSC async/await）を使うと fallback が体感できる。
+
 ### Actions の概念（React 19）
 
 transition 内で実行される非同期関数を「Action」と呼ぶ。`useActionState` / `useOptimistic` はこの概念の上に成り立つ。Action の中で pending 状態・エラー・楽観的更新が自動管理される。`<form action={fn}>` の `fn` も Action として扱われる。
