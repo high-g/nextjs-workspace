@@ -29,7 +29,7 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ## 現在の状況（Phase 8: React 18 / 19 の理解 進行中）
 
-Phase 7 AWS Lambda + API Gateway 完了。Phase 8 React 18 / 19 の理解を進行中。React 18 すべて完了。React 19 は Actions の概念 / `useActionState` / `<form action={fn}>` / `useFormStatus` が完了。残りは `useOptimistic` / `use(promise)` / `ref` props 化 / `<Context>` プロバイダ化 / メタデータサポート。
+Phase 7 AWS Lambda + API Gateway 完了。Phase 8 React 18 / 19 の理解を進行中。React 18 すべて完了。React 19 は Actions の概念 / `useActionState` / `<form action={fn}>` / `useFormStatus` / `useOptimistic` が完了。残りは `use(promise)` / `ref` props 化 / `<Context>` プロバイダ化 / メタデータサポート。
 
 ### リポジトリ構成
 
@@ -218,7 +218,7 @@ aws sts get-caller-identity
 
 ### 次回やること：Phase 8: React 19（続き）
 
-- `useOptimistic` / `use(promise)` を試す
+- `use(promise)` を試す
 - `forwardRef` → `ref` props / `<Context.Provider>` → `<Context>` への書き換えを把握
 - メタデータサポート（コンポーネント内で `<title>` / `<meta>` をレンダー）と Next.js の `metadata` export との使い分けを整理
 

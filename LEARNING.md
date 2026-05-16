@@ -394,7 +394,23 @@ React 18 以前は pending / error / result を個別に `useState` で管理す
 
 ### useOptimistic（React 19）
 
-リクエスト完了前に UI を先行更新し、失敗時に自動でロールバックするフック。楽観的更新のパターンをシンプルに実装できる。
+リクエスト完了前に UI を先行更新し、失敗時に自動でロールバックするフック。
+
+```ts
+const [optimisticState, addOptimistic] = useOptimistic(state, updateFn)
+```
+
+`state` が「確定した状態」の基準。サーバー応答後は自動でこの `state` に戻る。そのため `state` 自体を更新しないと楽観的アイテムが消えるだけになる。`useState` で実際の posts を管理し、サーバー応答後に `setPosts` で更新するのが正しいパターン。
+
+```ts
+startTransition(async () => {
+  addOptimisticPost(title)                 // 即 UI 更新
+  const newPost = await addPost(formData)  // サーバーリクエスト
+  setPosts((prev) => [...prev, newPost])   // 確定 state を更新
+})
+```
+
+`addOptimistic` は必ず `startTransition` または `<form action>` の中で呼ぶ必要がある。
 
 ### use(promise)（React 19）
 
