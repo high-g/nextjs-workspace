@@ -24,9 +24,9 @@
 | 4/24〜4/28 | ECR + ECS デプロイ（続き） | ✅ |
 | 4/29〜5/5 | Cloudflare デプロイ（pages, workers） | ✅ |
 | 5/6〜5/11 | AWS Lambda + API Gateway | ✅ |
-| 5/12〜5/15 | React 18 / 19 の理解 | 🔄 |
-| 5/15〜5/18 | TanStack Start | |
-| 5/19〜5/21 | Vite + | |
+| 5/12〜5/16 | React 18 / 19 の理解 | 🔄 |
+| 5/17〜5/19 | TanStack Start | |
+| 5/20〜5/21 | Vite + | |
 | 5/22〜5/26 | neverthrow（Honoで扱う場合を考えながら） | |
 | 5/27〜5/31 | Effect（Honoで扱う場合を考えながら） | |
 
@@ -129,7 +129,7 @@
 
 > リポジトリ: `nextjs-workspace`
 
-### EC2 直接デプロイ（4/4〜4/10）
+### EC2 直接デプロイ
 
 - [x] IAM ユーザー作成・アクセスキー発行・AWS CLI セットアップ
 - [x] IAM の基本概念を理解 — ユーザー・ロール・ポリシー・インスタンスプロファイル
@@ -139,7 +139,7 @@
 - [x] セキュリティグループでポート開放（22 / 3000 / 3001）
 - [x] ブラウザから EC2 パブリック IP でアクセス確認（Next.js + Hono API + DB 疎通）
 
-### CodeDeploy による自動デプロイ（4/11〜4/15）
+### CodeDeploy による自動デプロイ
 
 - [x] S3 バケット作成（`nextjs-deploy-artifacts-513148686116`）
 - [x] CodeDeploy エージェントを EC2 にインストール
@@ -150,7 +150,7 @@
 - [x] GitHub Actions ワークフロー作成（zip → S3 → CodeDeploy）
 - [x] push をトリガーに EC2 へ自動デプロイされることを確認
 
-### ECS + ECR（4/16〜4/28）
+### ECS + ECR
 
 - [x] ECS / ECR の基本構成を理解
 - [x] ECR リポジトリ作成・Docker イメージを push
@@ -175,13 +175,13 @@
 
 ---
 
-## Phase 5: Next.js 書籍（4/23） ✅
+## Phase 5: Next.js 書籍 ✅
 
 - [x] 書籍を読む
 
 ---
 
-## Phase 6: Cloudflare デプロイ（4/29〜5/5） ✅
+## Phase 6: Cloudflare デプロイ ✅
 
 > リポジトリ: `cloudflare-workspace`（新規作成）
 
@@ -195,7 +195,7 @@
 
 ---
 
-## Phase 7: AWS Lambda + API Gateway（5/6〜5/11）
+## Phase 7: AWS Lambda + API Gateway ✅
 
 > リポジトリ: `lambda-workspace`（新規作成）
 
@@ -206,7 +206,7 @@
 
 ---
 
-## Phase 8: React 18 / 19 の理解（5/12〜5/15）
+## Phase 8: React 18 / 19 の理解
 
 ### React 18（Next.js で使う機能）
 
@@ -236,28 +236,28 @@
 
 ---
 
-## Phase 9: TanStack Start（5/15〜5/18）
+## Phase 9: TanStack Start
 
 - [ ] TanStack Start の基本概念を理解
 - [ ] Next.js App Router との比較
 
 ---
 
-## Phase 10: Vite +（5/19〜5/21）
+## Phase 10: Vite +
 
 - [ ] Vite の基本概念を理解
 - [ ] Next.js との違い・使い分けを整理
 
 ---
 
-## Phase 11: neverthrow（5/22〜5/26）
+## Phase 11: neverthrow
 
 - [ ] neverthrow の基本（`Result` 型・`ok` / `err`）
 - [ ] Hono のルートハンドラーで neverthrow を使ったエラーハンドリング
 
 ---
 
-## Phase 12: Effect（5/27〜5/31）
+## Phase 12: Effect
 
 - [ ] Effect の基本概念を理解
 - [ ] Hono との組み合わせで実用的なパターンを試す
