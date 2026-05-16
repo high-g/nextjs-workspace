@@ -29,7 +29,7 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ## 現在の状況（Phase 8: React 18 / 19 の理解 進行中）
 
-Phase 7 AWS Lambda + API Gateway 完了。Phase 8 React 18 / 19 の理解を進行中。React 18（`useTransition` / `useDeferredValue` / `useId` / 自動バッチング / StrictMode / Suspense）すべて完了。次は React 19。
+Phase 7 AWS Lambda + API Gateway 完了。Phase 8 React 18 / 19 の理解を進行中。React 18 すべて完了。React 19 は Actions の概念 / `useActionState` / `<form action={fn}>` / `useFormStatus` が完了。残りは `useOptimistic` / `use(promise)` / `ref` props 化 / `<Context>` プロバイダ化 / メタデータサポート。
 
 ### リポジトリ構成
 
@@ -216,10 +216,8 @@ aws sts get-caller-identity
 - コールドスタート: Lambda は一定時間未使用で数百ms〜数秒の遅延が発生、ECS はなし
 - ユースケース: Lambda → 散発的リクエスト・イベント駆動、ECS → 常時接続・WebSocket・長時間処理
 
-### 次回やること：Phase 8: React 19
+### 次回やること：Phase 8: React 19（続き）
 
-- Actions の概念（transition 内の非同期関数 = Action）を先に把握してから各フックに入る
-- `useActionState` + `<form action={fn}>` + `useFormStatus` をローカルで試す
 - `useOptimistic` / `use(promise)` を試す
 - `forwardRef` → `ref` props / `<Context.Provider>` → `<Context>` への書き換えを把握
 - メタデータサポート（コンポーネント内で `<title>` / `<meta>` をレンダー）と Next.js の `metadata` export との使い分けを整理

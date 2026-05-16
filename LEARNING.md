@@ -370,6 +370,10 @@ export default function HeavyComponentWrapper() {
 
 transition 内で実行される非同期関数を「Action」と呼ぶ。`useActionState` / `useOptimistic` はこの概念の上に成り立つ。Action の中で pending 状態・エラー・楽観的更新が自動管理される。`<form action={fn}>` の `fn` も Action として扱われる。
 
+**React 19 の `<form action={fn}>` と Next.js Server Actions の関係**
+
+`<form action={fn}>` の構文は React 19 が定義した仕様。`fn` に渡すのがクライアント関数かServer Actions（`'use server'` 関数）かで実行場所が変わる。構文は同じ、実行場所が違う。`'use server'` / `'use client'` はどちらも「ディレクティブ」と呼ぶ。
+
 ### useActionState（React 19）
 
 フォーム送信の pending / error / result を1つのフックで管理する。Server Actions と組み合わせて使う。
@@ -378,9 +382,15 @@ transition 内で実行される非同期関数を「Action」と呼ぶ。`useAc
 const [state, formAction, isPending] = useActionState(serverAction, initialState)
 ```
 
+第2引数の `initialState` は送信前の `state` の初期値。`fn`（Server Action）の引数は第1引数が `prevState`（前回の state）、第2引数が `formData` の順番になる。
+
+React 18 以前は pending / error / result を個別に `useState` で管理する命令的なコードが必要だったが、`useActionState` で宣言的に記述できる。
+
 ### useFormStatus（React 19）
 
-親フォームの送信状態（`pending` など）を子コンポーネントから参照するフック。送信ボタンを別コンポーネントに切り出したときに props バケツリレーを避けられる。
+親フォームの送信状態（`pending` など）を子コンポーネントから参照するフック。送信ボタンを別コンポーネントに切り出したときに props バケツリレーを避けられる。`react-dom` からインポートする。
+
+`useFormStatus` を使うコンポーネントは `<form>` の子コンポーネントである必要がある。`<form>` と同じコンポーネント内では動かない。
 
 ### useOptimistic（React 19）
 
