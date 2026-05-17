@@ -229,7 +229,7 @@
 - [x] `<form action={fn}>` — フォームの `action` に Server Actions を渡す（`onSubmit` 不要）
 - [x] `useFormStatus` — 送信ボタンなど子コンポーネントが親フォームの pending を参照
 - [x] `useOptimistic` — リクエスト完了前に UI を先行更新し、失敗時に自動ロールバック
-- [ ] `use(promise)` — Client Component のレンダー中にプロミスを読む（条件分岐内でも使える点が他フックと違う）
+- [x] `use(promise)` — Client Component のレンダー中にプロミスを読む（条件分岐内でも使える点が他フックと違う）
 - [ ] `ref` が props に — `forwardRef` 廃止。コンポーネント定義の簡素化を体験
 - [ ] `<Context>` がプロバイダに — `<ThemeContext.Provider>` → `<ThemeContext>` への書き換え
 - [ ] メタデータサポート — コンポーネント内で `<title>` / `<meta>` をレンダーすると自動で `<head>` に移動（Next.js の `metadata` export との使い分けを把握）

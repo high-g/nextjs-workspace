@@ -416,6 +416,28 @@ startTransition(async () => {
 
 Client Component のレンダー中にプロミスを読む API。他のフックと違い条件分岐内でも使える。Suspense と組み合わせてデータのフォールバック表示に使う。
 
+**RSC の async/await との使い分け**
+
+RSC の `async/await` でほぼ同じことができるが、`use(promise)` は「Client Component でデータを読みつつ `useState` / イベントハンドラも使いたい場合」に使う。Server Component では `useState` が使えないため、「データ取得はサーバー、インタラクションはクライアント」を1コンポーネントで実現するときの橋渡し役。
+
+```
+page.tsx（RSC）
+  └─ const postsPromise = fetchPosts()  // await しない・Promise のまま渡す
+  └─ <PostList postsPromise={postsPromise} />
+            ↓
+PostList.tsx（Client Component）
+  └─ const posts = use(postsPromise)    // Promise を読む
+  └─ const [selected, setSelected] = useState(null)  // useState も使える
+```
+
+**Promise の生成場所に注意**
+
+コンポーネント内で `fetch()` を呼ぶとレンダーのたびに新しい Promise が生成されて無限ループになる。Promise はモジュールスコープか Server Component で生成する。
+
+**TanStack Query との使い分け**
+
+`use(promise)` はキャッシュ・再フェッチの機能を持たない。クライアント側でフェッチ管理が必要なら TanStack Query を使う。Next.js App Router では RSC でフェッチするのが基本で、`use(promise)` はその補助的な位置づけ。
+
 ### ref が props に（React 19）
 
 `forwardRef` が不要になり、コンポーネント定義の第2引数ではなく props の `ref` として受け取れるようになった。
