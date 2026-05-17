@@ -24,7 +24,7 @@
 | 4/24〜4/28 | ECR + ECS デプロイ（続き） | ✅ |
 | 4/29〜5/5 | Cloudflare デプロイ（pages, workers） | ✅ |
 | 5/6〜5/11 | AWS Lambda + API Gateway | ✅ |
-| 5/12〜5/16 | React 18 / 19 の理解 | 🔄 |
+| 5/12〜5/16 | React 18 / 19 の理解 | ✅ |
 | 5/17〜5/19 | TanStack Start | |
 | 5/20〜5/21 | Vite + | |
 | 5/22〜5/26 | neverthrow（Honoで扱う場合を考えながら） | |
@@ -206,7 +206,7 @@
 
 ---
 
-## Phase 8: React 18 / 19 の理解
+## Phase 8: React 18 / 19 の理解 ✅
 
 ### React 18（Next.js で使う機能）
 
@@ -230,9 +230,9 @@
 - [x] `useFormStatus` — 送信ボタンなど子コンポーネントが親フォームの pending を参照
 - [x] `useOptimistic` — リクエスト完了前に UI を先行更新し、失敗時に自動ロールバック
 - [x] `use(promise)` — Client Component のレンダー中にプロミスを読む（条件分岐内でも使える点が他フックと違う）
-- [ ] `ref` が props に — `forwardRef` 廃止。コンポーネント定義の簡素化を体験
-- [ ] `<Context>` がプロバイダに — `<ThemeContext.Provider>` → `<ThemeContext>` への書き換え
-- [ ] メタデータサポート — コンポーネント内で `<title>` / `<meta>` をレンダーすると自動で `<head>` に移動（Next.js の `metadata` export との使い分けを把握）
+- [x] `ref` が props に — `forwardRef` 廃止。コンポーネント定義の簡素化を体験
+- [x] `<Context>` がプロバイダに — `<ThemeContext.Provider>` → `<ThemeContext>` への書き換え
+- [x] メタデータサポート — スキップ（Next.js の `metadata` export で代替）
 
 ---
 

@@ -27,9 +27,9 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 8: React 18 / 19 の理解 進行中）
+## 現在の状況（Phase 9: TanStack Start 未着手）
 
-Phase 7 AWS Lambda + API Gateway 完了。Phase 8 React 18 / 19 の理解を進行中。React 18 すべて完了。React 19 は Actions の概念 / `useActionState` / `<form action={fn}>` / `useFormStatus` / `useOptimistic` / `use(promise)` が完了。残りは `ref` props 化 / `<Context>` プロバイダ化 / メタデータサポート。
+Phase 8 React 18 / 19 の理解すべて完了。次は Phase 9 TanStack Start。
 
 ### リポジトリ構成
 
@@ -216,12 +216,10 @@ aws sts get-caller-identity
 - コールドスタート: Lambda は一定時間未使用で数百ms〜数秒の遅延が発生、ECS はなし
 - ユースケース: Lambda → 散発的リクエスト・イベント駆動、ECS → 常時接続・WebSocket・長時間処理
 
-### 次回やること：Phase 8: React 19（続き）
+### 次回やること：Phase 9: TanStack Start
 
-- `forwardRef` → `ref` props への書き換えを把握
-- `<Context.Provider>` → `<Context>` への書き換えを把握
-- メタデータサポート（コンポーネント内で `<title>` / `<meta>` をレンダー）と Next.js の `metadata` export との使い分けを整理
+- TanStack Start の基本概念を理解
+- Next.js App Router との比較
 
 参考:
-- React 18: https://ja.react.dev/blog/2022/03/29/react-v18
-- React 19: https://ja.react.dev/blog/2024/12/05/react-19
+- TanStack Start: https://tanstack.com/start/latest
