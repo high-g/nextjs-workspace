@@ -7,6 +7,7 @@
 | `nextjs-workspace` | Docker + AWS（EC2 / CodeDeploy / ECS） |
 | `cloudflare-workspace` | Cloudflare（Workers / D1 / Pages） |
 | `lambda-workspace` | AWS Lambda + API Gateway |
+| `tanstack-start-workspace` | TanStack Start |
 
 ## スケジュール
 
@@ -237,6 +238,8 @@
 ---
 
 ## Phase 9: TanStack Start
+
+> リポジトリ: `tanstack-start-workspace`（新規作成）
 
 - [ ] TanStack Start の基本概念を理解
 - [ ] Next.js App Router との比較
