@@ -36,7 +36,7 @@ Phase 8 React 18 / 19 の理解すべて完了。次は Phase 9 TanStack Start�
 - `nextjs-workspace`: Docker + AWS（本リポジトリ）
 - `cloudflare-workspace`: Cloudflare Workers / D1 / Pages（新規作成）
 - `lambda-workspace`: AWS Lambda + API Gateway（新規作成）
-- `tanstack-start-workspace`: TanStack Start（新規作成）
+- `tanstack-start-workspace`: TanStack Start（新規作成・リポジトリ作成済み）
 
 ### 構成
 
