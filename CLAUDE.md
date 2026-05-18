@@ -27,9 +27,9 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 9: TanStack Start 未着手）
+## 現在の状況（Phase 9: TanStack Start 進行中）
 
-Phase 8 React 18 / 19 の理解すべて完了。次は Phase 9 TanStack Start。
+Phase 8 React 18 / 19 の理解すべて完了。Phase 9 TanStack Start を開始。`tanstack-start-workspace` をローカルに作成・CLAUDE.md / README.md 追加済み。現在は Vite + React + TanStack Router の構成になっており、TanStack Start（`@tanstack/start` + Vinxi）のセットアップが必要。
 
 ### リポジトリ構成
 
@@ -219,6 +219,7 @@ aws sts get-caller-identity
 
 ### 次回やること：Phase 9: TanStack Start
 
+- 公式ドキュメントに沿って TanStack Start をセットアップ（`@tanstack/start` + Vinxi）
 - TanStack Start の基本概念を理解
 - Next.js App Router との比較
 
