@@ -26,10 +26,9 @@
 | 4/29〜5/5 | Cloudflare デプロイ（pages, workers） | ✅ |
 | 5/6〜5/11 | AWS Lambda + API Gateway | ✅ |
 | 5/12〜5/16 | React 18 / 19 の理解 | ✅ |
-| 5/18〜5/20 | TanStack Start | 🔄 |
-| 5/21 | Vite + | |
-| 5/22〜5/26 | neverthrow（Honoで扱う場合を考えながら） | |
-| 5/27〜5/31 | Effect（Honoで扱う場合を考えながら） | |
+| 5/18〜5/23 | TanStack Start | 🔄 |
+| 5/24〜5/27 | neverthrow（Honoで扱う場合を考えながら） | |
+| 5/28〜5/31 | Effect（Honoで扱う場合を考えながら） | |
 
 ---
 
@@ -246,21 +245,14 @@
 
 ---
 
-## Phase 10: Vite +
-
-- [ ] Vite の基本概念を理解
-- [ ] Next.js との違い・使い分けを整理
-
----
-
-## Phase 11: neverthrow
+## Phase 10: neverthrow
 
 - [ ] neverthrow の基本（`Result` 型・`ok` / `err`）
 - [ ] Hono のルートハンドラーで neverthrow を使ったエラーハンドリング
 
 ---
 
-## Phase 12: Effect
+## Phase 11: Effect
 
 - [ ] Effect の基本概念を理解
 - [ ] Hono との組み合わせで実用的なパターンを試す
