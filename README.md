@@ -77,8 +77,7 @@ pnpm dev:web   # nextjs を起動
 | Phase 7 | AWS Lambda + API Gateway | 完了 | lambda-workspace |
 | Phase 8 | React 18 / 19 の理解 | 完了 | — |
 | Phase 9 | TanStack Start | 進行中 | tanstack-start-workspace |
-| Phase 10 | Vite + | 未着手 | — |
-| Phase 11 | neverthrow | 未着手 | — |
-| Phase 12 | Effect | 未着手 | — |
+| Phase 10 | neverthrow | 未着手 | — |
+| Phase 11 | Effect | 未着手 | — |
 
 詳細は [ROADMAP.md](./ROADMAP.md) を参照。
