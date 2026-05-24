@@ -26,9 +26,9 @@
 | 4/29〜5/5 | Cloudflare デプロイ（pages, workers） | ✅ |
 | 5/6〜5/11 | AWS Lambda + API Gateway | ✅ |
 | 5/12〜5/16 | React 18 / 19 の理解 | ✅ |
-| 5/18〜5/23 | TanStack Start | 🔄 |
-| 5/24〜5/27 | neverthrow（Honoで扱う場合を考えながら） | |
-| 5/28〜5/31 | Effect（Honoで扱う場合を考えながら） | |
+| 5/18〜5/25 | TanStack Start | 🔄 |
+| 5/26〜5/28 | neverthrow（Honoで扱う場合を考えながら） | |
+| 5/29〜5/31 | Effect（Honoで扱う場合を考えながら） | |
 
 ---
 
