@@ -27,9 +27,9 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 9: TanStack Start 進行中）
+## 現在の状況（Phase 10: neverthrow 着手前）
 
-Phase 8 React 18 / 19 の理解すべて完了。Phase 9 TanStack Start を開始。`tanstack-start-workspace` をローカルに作成・CLAUDE.md / README.md 追加済み。現在は Vite + React + TanStack Router の構成になっており、TanStack Start（`@tanstack/start` + Vinxi）のセットアップが必要。
+Phase 9 TanStack Start すべて完了。`tanstack-start-workspace` にて TanStack Start（`@tanstack/start` + Vinxi）のセットアップ・基本概念の習得・Next.js App Router との比較を実施済み。次は Phase 10 neverthrow に着手。
 
 ### リポジトリ構成
 
@@ -217,11 +217,16 @@ aws sts get-caller-identity
 - コールドスタート: Lambda は一定時間未使用で数百ms〜数秒の遅延が発生、ECS はなし
 - ユースケース: Lambda → 散発的リクエスト・イベント駆動、ECS → 常時接続・WebSocket・長時間処理
 
-### 次回やること：Phase 9: TanStack Start
+### 完了済み：TanStack Start（tanstack-start-workspace）
 
-- 公式ドキュメントに沿って TanStack Start をセットアップ（`@tanstack/start` + Vinxi）
+- TanStack Start のセットアップ（`@tanstack/start` + Vinxi）
 - TanStack Start の基本概念を理解
 - Next.js App Router との比較
 
+### 次回やること：Phase 10: neverthrow
+
+- neverthrow の基本（`Result` 型・`ok` / `err`）
+- Hono のルートハンドラーで neverthrow を使ったエラーハンドリング
+
 参考:
-- TanStack Start: https://tanstack.com/start/latest
+- neverthrow: https://github.com/supermacro/neverthrow
