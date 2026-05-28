@@ -27,7 +27,7 @@
 | 5/6〜5/11 | AWS Lambda + API Gateway | ✅ |
 | 5/12〜5/16 | React 18 / 19 の理解 | ✅ |
 | 5/18〜5/27 | TanStack Start | ✅ |
-| 5/28〜5/29 | neverthrow（Honoで扱う場合を考えながら） | |
+| 5/28〜5/29 | neverthrow（Honoで扱う場合を考えながら） | 🔄 |
 | 5/30〜5/31 | Effect（Honoで扱う場合を考えながら） | |
 
 ---
@@ -246,10 +246,23 @@
 
 ---
 
-## Phase 10: neverthrow
+## Phase 10: neverthrow 🔄
 
-- [ ] neverthrow の基本（`Result` 型・`ok` / `err`）
+- [x] neverthrow の基本（`Result` 型・`ok` / `err`）
+  - [x] `neverthrow` インストール（`pnpm add neverthrow --filter hono-api`）
+  - [x] `result-example.ts` 作成・`node --experimental-strip-types` で動作確認
+  - [x] `ok` / `err` で成功・失敗をラップし `Result<T, E>` 型で返す基本パターンを習得
+  - [x] `match` / `isOk` / `isErr` で Result を取り出す3パターンを習得
+  - [x] `andThen` / `map` / `mapErr` のチェーンで Railway Oriented Programming を実現
+  - [x] Haskell `Maybe` モナド・Rust `Result` との対応関係を理解
 - [ ] Hono のルートハンドラーで neverthrow を使ったエラーハンドリング
+  - [ ] `ResultAsync.fromPromise()` で DB 操作（Promise）を `ResultAsync` にラップ
+  - [ ] `neverthrowPosts.ts` を新規作成し、既存 `drizzlePosts.ts` を neverthrow で書き換え
+  - [ ] ルートハンドラー内で `.match()` を使って `c.json()` レスポンスを返す
+- [ ] 関数型スタイルでの組み方
+  - [ ] エラー型を Discriminated Union で設計する（`{ type: "not_found" } | { type: "db_error" }` など）
+  - [ ] 処理をレイヤーに分けて関数合成する（DB 層 → ユースケース層 → ハンドラー層）
+  - [ ] `combine` / `combineWithAllErrors` で複数の `Result` をまとめる
 
 ---
 

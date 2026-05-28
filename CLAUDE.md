@@ -27,9 +27,9 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 10: neverthrow 着手前）
+## 現在の状況（Phase 10: neverthrow 進行中）
 
-Phase 9 TanStack Start すべて完了。`tanstack-start-workspace` にて TanStack Start（`@tanstack/start` + Vinxi）のセットアップ・基本概念の習得・Next.js App Router との比較を実施済み。次は Phase 10 neverthrow に着手。
+Phase 10 neverthrow 着手中。`hono-api/src/lib/result-example.ts` を作成し、`Result<T, E>` / `ok` / `err` / `match` / `isOk` / `isErr` / `andThen` / `map` / `mapErr` の基本パターンと Railway Oriented Programming の概念を習得済み。次は Hono ルートハンドラーへの適用（`ResultAsync`）。
 
 ### リポジトリ構成
 
@@ -223,10 +223,39 @@ aws sts get-caller-identity
 - TanStack Start の基本概念を理解
 - Next.js App Router との比較
 
-### 次回やること：Phase 10: neverthrow
+### 次回やること：Phase 10 後半 — Hono ルートハンドラーへの適用
 
-- neverthrow の基本（`Result` 型・`ok` / `err`）
-- Hono のルートハンドラーで neverthrow を使ったエラーハンドリング
+`hono-api/src/routes/neverthrowPosts.ts` を新規作成し、既存の `drizzlePosts.ts` を neverthrow で書き換える。
+
+```ts
+import { ok, err, ResultAsync } from "neverthrow"
+import { eq } from "drizzle-orm"
+import { db } from "../lib/drizzle"
+import { posts } from "../../drizzle/schema"
+
+// DB 操作を ResultAsync でラップ
+function findPost(id: number) {
+  return ResultAsync.fromPromise(
+    db.query.posts.findFirst({ where: eq(posts.id, id) }),
+    (e) => ({ type: "db_error" as const, cause: e })
+  ).andThen((post) =>
+    post ? ok(post) : err({ type: "not_found" as const })
+  )
+}
+
+// ルートハンドラーで使う
+.get("/:id", async (c) => {
+  const id = Number(c.req.param("id"))
+  const result = await findPost(id)
+
+  return result.match(
+    (post) => c.json(post),
+    (e) => e.type === "not_found"
+      ? c.json({ message: "Not found" }, 404)
+      : c.json({ message: "DB error" }, 500)
+  )
+})
+```
 
 参考:
 - neverthrow: https://github.com/supermacro/neverthrow
