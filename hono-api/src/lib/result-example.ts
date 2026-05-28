@@ -23,7 +23,12 @@ if (result.isErr()) {
 }
 
 // パターン3: andThen チェーン
-divide(10, 2)
+const result2 = divide(10, 2)
   .andThen((n) => divide(n, 2)) // Okなら次の計算
   .map((n) => n * 100) // Okなら変換
   .mapErr((e) => `Err: ${e}`); // Errなら変換
+
+result2.match(
+  (val) => console.log("ok: ", val),
+  (e) => console.log("err: ", e),
+);
