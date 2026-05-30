@@ -1,4 +1,4 @@
-import { ok, err, Result } from "neverthrow";
+import { ok, err, Result, ResultAsync } from "neverthrow";
 
 // Result<T, E> = Ok<T> | Err<E>
 function divide(a: number, b: number): Result<number, string> {
@@ -32,3 +32,20 @@ result2.match(
   (val) => console.log("ok: ", val),
   (e) => console.log("err: ", e),
 );
+
+// ResultAsync
+function fetchUser(id: number) {
+  return ResultAsync.fromPromise(
+    fetch(`https://jsonplaceholder.typicode.com/posts/${id}`).then((r) =>
+      r.json(),
+    ),
+    (e) => ({ type: "fetch_error" as const, cause: e }),
+  );
+}
+
+fetchUser(1)
+  .andThen((user) => (user ? ok(user) : err({ type: "not_found" as const })))
+  .match(
+    (user) => console.log(user),
+    (e) => console.log(e.type),
+  );
