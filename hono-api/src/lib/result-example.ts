@@ -33,11 +33,13 @@ result2.match(
   (e) => console.log("err: ", e),
 );
 
+type Post = { id: number; title: string; body: string; userId: number };
+
 // ResultAsync
 function fetchUser(id: number) {
   return ResultAsync.fromPromise(
-    fetch(`https://jsonplaceholder.typicode.com/posts/${id}`).then((r) =>
-      r.json(),
+    fetch(`https://jsonplaceholder.typicode.com/posts/${id}`).then(
+      (r) => r.json() as Promise<Post>,
     ),
     (e) => ({ type: "fetch_error" as const, cause: e }),
   );
