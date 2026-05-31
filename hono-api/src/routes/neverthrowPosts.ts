@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { ok, err, ResultAsync } from "neverthrow";
+import { ResultAsync } from "neverthrow";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { eq } from "drizzle-orm";
@@ -21,6 +21,13 @@ function findAllPosts() {
   );
 }
 
+function createPost(body: z.infer<typeof PostSchema>) {
+  return ResultAsync.fromPromise(
+    db.insert(posts).values(body).returning(),
+    (e) => ({ type: "db_error" as const, cause: e }),
+  );
+}
+
 export const neverthrowPostRoutes = new Hono()
   .get("/", async (c) => {
     const result = await findAllPosts();
@@ -31,8 +38,11 @@ export const neverthrowPostRoutes = new Hono()
   })
   .post("/", zValidator("json", PostSchema), async (c) => {
     const body = c.req.valid("json");
-    const result = await db.insert(posts).values(body).returning();
-    return c.json(result[0], 201);
+    const result = await createPost(body);
+    return result.match(
+      (rows) => c.json(rows[0], 201),
+      () => c.json({ message: "Database error" }, 500),
+    );
   })
   .get("/:id", async (c) => {
     const id = Number(c.req.param("id"));
