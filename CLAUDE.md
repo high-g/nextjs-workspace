@@ -27,9 +27,9 @@ ROADMAP.mdやCLAUDE.mdは編集してok
 
 ---
 
-## 現在の状況（Phase 10: neverthrow 進行中）
+## 現在の状況（Phase 10: neverthrow 完了）
 
-Phase 10 neverthrow 着手中。`hono-api/src/lib/result-example.ts` を作成し、`Result<T, E>` / `ok` / `err` / `match` / `isOk` / `isErr` / `andThen` / `map` / `mapErr` の基本パターンと Railway Oriented Programming の概念を習得済み。次は Hono ルートハンドラーへの適用（`ResultAsync`）。
+Phase 10 neverthrow 完了。`result-example.ts` で基本概念（`Result<T,E>` / `ok` / `err` / `match` / `andThen` / `ResultAsync`）を習得し、`neverthrowPosts.ts` にて GET `/` と POST `/` を neverthrow スタイルで実装済み。エラー型の Discriminated Union 設計・repository層とhandler層の分離も実践済み。残りルート（GET `/:id` / PUT / DELETE）は同パターンのため省略。
 
 ### リポジトリ構成
 
@@ -223,31 +223,25 @@ aws sts get-caller-identity
 - TanStack Start の基本概念を理解
 - Next.js App Router との比較
 
-### 次回やること：Phase 10 後半 — Hono ルートハンドラーへの適用
+### 次回やること：Phase 10 残りルート（任意）
 
-`hono-api/src/routes/neverthrowPosts.ts` を新規作成し、既存の `drizzlePosts.ts` を neverthrow で書き換える。
+`neverthrowPosts.ts` の GET `/:id` / PUT / DELETE を neverthrow で書き換える。GET `/` と POST `/` と同パターン。
 
 ```ts
-import { ok, err, ResultAsync } from "neverthrow"
-import { eq } from "drizzle-orm"
-import { db } from "../lib/drizzle"
-import { posts } from "../../drizzle/schema"
-
-// DB 操作を ResultAsync でラップ
+// findPost（not_found も Err で表現する）
 function findPost(id: number) {
   return ResultAsync.fromPromise(
-    db.query.posts.findFirst({ where: eq(posts.id, id) }),
+    db.query.posts.findFirst({ where: eq(posts.id, id), with: { author: true } }),
     (e) => ({ type: "db_error" as const, cause: e })
   ).andThen((post) =>
     post ? ok(post) : err({ type: "not_found" as const })
   )
 }
 
-// ルートハンドラーで使う
+// ハンドラー
 .get("/:id", async (c) => {
   const id = Number(c.req.param("id"))
   const result = await findPost(id)
-
   return result.match(
     (post) => c.json(post),
     (e) => e.type === "not_found"
