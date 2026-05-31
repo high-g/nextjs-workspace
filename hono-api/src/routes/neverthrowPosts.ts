@@ -1,9 +1,12 @@
 import { Hono } from "hono";
+import { ok, err, ResultAsync } from "neverthrow";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { eq } from "drizzle-orm";
 import { db } from "../lib/drizzle";
 import { posts } from "../../drizzle/schema";
+
+type PostError = { type: "not_found" } | { type: "db_error"; cause: unknown };
 
 const PostSchema = z.object({
   title: z.string().min(1),
@@ -11,12 +14,20 @@ const PostSchema = z.object({
   authorId: z.number().int(),
 });
 
-export const drizzlePostRoutes = new Hono()
+function findAllPosts() {
+  return ResultAsync.fromPromise(
+    db.query.posts.findMany({ with: { author: true } }),
+    (e) => ({ type: "db_error" as const, cause: e }),
+  );
+}
+
+export const neverthrowPostRoutes = new Hono()
   .get("/", async (c) => {
-    const allPosts = await db.query.posts.findMany({
-      with: { author: true },
-    });
-    return c.json(allPosts);
+    const result = await findAllPosts();
+    return result.match(
+      (posts) => c.json(posts),
+      () => c.json({ message: "Database error" }, 500),
+    );
   })
   .post("/", zValidator("json", PostSchema), async (c) => {
     const body = c.req.valid("json");
@@ -35,7 +46,11 @@ export const drizzlePostRoutes = new Hono()
   .put("/:id", zValidator("json", PostSchema.partial()), async (c) => {
     const id = Number(c.req.param("id"));
     const body = c.req.valid("json");
-    const result = await db.update(posts).set(body).where(eq(posts.id, id)).returning();
+    const result = await db
+      .update(posts)
+      .set(body)
+      .where(eq(posts.id, id))
+      .returning();
     if (!result[0]) return c.json({ message: "Not found" }, 404);
     return c.json(result[0]);
   })
