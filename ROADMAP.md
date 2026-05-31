@@ -27,8 +27,7 @@
 | 5/6〜5/11 | AWS Lambda + API Gateway | ✅ |
 | 5/12〜5/16 | React 18 / 19 の理解 | ✅ |
 | 5/18〜5/27 | TanStack Start | ✅ |
-| 5/28〜5/29 | neverthrow（Honoで扱う場合を考えながら） | 🔄 |
-| 5/30〜5/31 | Effect（Honoで扱う場合を考えながら） | |
+| 5/28〜5/31 | neverthrow（Honoで扱う場合を考えながら） | 🔄 |
 
 ---
 
@@ -263,13 +262,6 @@
   - [ ] エラー型を Discriminated Union で設計する（`{ type: "not_found" } | { type: "db_error" }` など）
   - [ ] 処理をレイヤーに分けて関数合成する（DB 層 → ユースケース層 → ハンドラー層）
   - [ ] `combine` / `combineWithAllErrors` で複数の `Result` をまとめる
-
----
-
-## Phase 11: Effect
-
-- [ ] Effect の基本概念を理解
-- [ ] Hono との組み合わせで実用的なパターンを試す
 
 ---
 
