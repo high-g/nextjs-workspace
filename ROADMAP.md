@@ -263,7 +263,7 @@
 - [x] 関数型スタイルでの組み方
   - [x] エラー型を Discriminated Union で設計する（`{ type: "not_found" } | { type: "db_error" }` など）
   - [x] 処理をレイヤーに分けて関数合成する（repository層 → handler層）
-  - [ ] `combine` / `combineWithAllErrors` で複数の `Result` をまとめる（スキップ・今回のCRUDには不要）
+  - [x] `combine` / `combineWithAllErrors` で複数の `Result` をまとめる（スキップ・今回のCRUDには不要）
 
 ---
 
